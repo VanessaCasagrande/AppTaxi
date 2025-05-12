@@ -1,0 +1,119 @@
+ion-menu {
+  --width: 300px;
+  --background: var(--ion-color-taxi-gray);
+}
+
+.user-info {
+  --background: var(--ion-color-primary);
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+
+  ion-avatar {
+    width: 60px;
+    height: 60px;
+    margin-right: 16px;
+    border: 2px solid var(--ion-color-taxi-black);
+  }
+
+  ion-label {
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--ion-color-taxi-black);
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--ion-color-taxi-black);
+    }
+  }
+}
+
+.menu-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  --min-height: 48px;
+  margin: 4px 0;
+  border-radius: 8px;
+
+  ion-icon {
+    font-size: 20px;
+    margin-right: 16px;
+    color: var(--ion-color-taxi-black);
+  }
+
+  &.selected {
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-taxi-black);
+
+    ion-icon {
+      color: var(--ion-color-taxi-black);
+    }
+  }
+
+  &:hover {
+    --background: var(--ion-color-primary-tint);
+  }
+}
+
+ion-item-divider {
+  --background: var(--ion-color-taxi-gray);
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  --min-height: 40px;
+  margin: 16px 0;
+
+  ion-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ion-color-taxi-black);
+  }
+}
+
+ion-footer {
+  ion-toolbar {
+    --background: var(--ion-color-primary);
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+  }
+
+  ion-item {
+    --background: transparent;
+    --padding-start: 16px;
+    --padding-end: 16px;
+
+    ion-label {
+      h3 {
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 2px;
+        color: var(--ion-color-taxi-black);
+      }
+
+      p {
+        font-size: 10px;
+        color: var(--ion-color-taxi-black);
+      }
+    }
+
+    ion-icon {
+      color: var(--ion-color-taxi-black);
+    }
+  }
+}
+
+ion-content {
+  --background: var(--ion-color-taxi-gray);
+}
+
+ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-taxi-black);
+}

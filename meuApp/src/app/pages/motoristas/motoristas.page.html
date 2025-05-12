@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Motoristas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ editando ? 'Editar' : 'Novo' }} Motorista</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Nome</ion-label>
+        <ion-input [(ngModel)]="motorista.nome"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">CNH</ion-label>
+        <ion-input [(ngModel)]="motorista.cnh"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Telefone</ion-label>
+        <ion-input [(ngModel)]="motorista.telefone"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input [(ngModel)]="motorista.email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Status</ion-label>
+        <ion-select [(ngModel)]="motorista.status">
+          <ion-select-option value="ativo">Ativo</ion-select-option>
+          <ion-select-option value="inativo">Inativo</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-button expand="block" (click)="salvar()">
+        {{ editando ? 'Atualizar' : 'Salvar' }}
+      </ion-button>
+      <ion-button expand="block" color="medium" (click)="limparFormulario()">
+        Cancelar
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list>
+    <ion-item *ngFor="let motorista of motoristas">
+      <ion-label>
+        <h2>{{ motorista.nome }}</h2>
+        <p>CNH: {{ motorista.cnh }}</p>
+        <p>Telefone: {{ motorista.telefone }}</p>
+        <p>Email: {{ motorista.email }}</p>
+        <p>Status: {{ motorista.status }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button (click)="editar(motorista)">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="excluir(motorista.id!)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+</ion-content>
