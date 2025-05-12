@@ -1,13 +1,106 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>dashboard</ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Dashboard</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">dashboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <!-- Cards de Resumo -->
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="6" size-lg="3">
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <ion-icon name="car" class="stat-icon"></ion-icon>
+            <div class="stat-info">
+              <h3>{{ totalMotoristas }}</h3>
+              <p>Motoristas Ativos</p>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+      <ion-col size="12" size-md="6" size-lg="3">
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <ion-icon name="map" class="stat-icon"></ion-icon>
+            <div class="stat-info">
+              <h3>{{ corridasHoje }}</h3>
+              <p>Corridas Hoje</p>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+      <ion-col size="12" size-md="6" size-lg="3">
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <ion-icon name="people" class="stat-icon"></ion-icon>
+            <div class="stat-info">
+              <h3>{{ totalClientes }}</h3>
+              <p>Clientes</p>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+      <ion-col size="12" size-md="6" size-lg="3">
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <ion-icon name="cash" class="stat-icon"></ion-icon>
+            <div class="stat-info">
+              <h3>R$ {{ faturamentoHoje }}</h3>
+              <p>Faturamento Hoje</p>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Gráficos e Listas -->
+  <ion-grid>
+    <ion-row>
+      <!-- Gráfico de Corridas -->
+      <ion-col size="12" size-lg="8">
+        <ion-card class="chart-card">
+          <ion-card-header>
+            <ion-card-title>Corridas por Período</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <canvas #corridasChart></canvas>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <!-- Últimas Corridas -->
+      <ion-col size="12" size-lg="4">
+        <ion-card class="list-card">
+          <ion-card-header>
+            <ion-card-title>Últimas Corridas</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-item *ngFor="let corrida of ultimasCorridas">
+                <ion-label>
+                  <h3>{{ corrida.motorista }}</h3>
+                  <p>{{ corrida.origem }} → {{ corrida.destino }}</p>
+                  <p class="corrida-valor">R$ {{ corrida.valor }}</p>
+                </ion-label>
+                <ion-badge slot="end" [color]="corrida.status === 'concluída' ? 'success' : 'warning'">
+                  {{ corrida.status }}
+                </ion-badge>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- Mapa de Calor -->
+    
+  </ion-grid>
 </ion-content>

@@ -5,6 +5,7 @@ import { MotoristasPage } from './pages/motoristas/motoristas.page';
 import { CorridasPage } from './pages/corridas/corridas.page';
 import { ClientesPage } from './pages/clientes/clientes.page';
 import { VeiculosPage } from './pages/veiculos/veiculos.page';
+import { DashboardPage } from './pages/dashboard/dashboard.page';
 
 const routes: Routes = [
   {
@@ -15,6 +16,10 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomePage
+  },
+  {
+    path: 'dashboard',
+    component: DashboardPage
   },
   {
     path: 'motoristas',

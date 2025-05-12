@@ -1,11 +1,48 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>Motoristas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="mostrarFormulario()">
+        <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-card>
+  <!-- Lista de Motoristas -->
+  <ion-list *ngIf="!mostrarForm">
+    <ion-item *ngFor="let motorista of motoristas">
+      <ion-label>
+        <h2>{{ motorista.nome }}</h2>
+        <p>CNH: {{ motorista.cnh }}</p>
+        <p>Telefone: {{ motorista.telefone }}</p>
+        <p>Email: {{ motorista.email }}</p>
+        <p>
+          <ion-icon 
+            [name]="motorista.status === 'ativo' ? 'checkmark-circle' : 'close-circle'"
+            [color]="motorista.status === 'ativo' ? 'success' : 'danger'"
+            class="status-icon">
+          </ion-icon>
+          Status: {{ motorista.status }}
+        </p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button (click)="editar(motorista)">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="excluir(motorista.id!)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <!-- Formulário de Cadastro/Edição -->
+  <ion-card *ngIf="mostrarForm">
     <ion-card-header>
       <ion-card-title>{{ editando ? 'Editar' : 'Novo' }} Motorista</ion-card-title>
     </ion-card-header>
@@ -36,29 +73,9 @@
       <ion-button expand="block" (click)="salvar()">
         {{ editando ? 'Atualizar' : 'Salvar' }}
       </ion-button>
-      <ion-button expand="block" color="medium" (click)="limparFormulario()">
+      <ion-button expand="block" color="medium" (click)="cancelar()">
         Cancelar
       </ion-button>
     </ion-card-content>
   </ion-card>
-
-  <ion-list>
-    <ion-item *ngFor="let motorista of motoristas">
-      <ion-label>
-        <h2>{{ motorista.nome }}</h2>
-        <p>CNH: {{ motorista.cnh }}</p>
-        <p>Telefone: {{ motorista.telefone }}</p>
-        <p>Email: {{ motorista.email }}</p>
-        <p>Status: {{ motorista.status }}</p>
-      </ion-label>
-      <ion-buttons slot="end">
-        <ion-button (click)="editar(motorista)">
-          <ion-icon name="create-outline"></ion-icon>
-        </ion-button>
-        <ion-button color="danger" (click)="excluir(motorista.id!)">
-          <ion-icon name="trash-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
-  </ion-list>
 </ion-content>

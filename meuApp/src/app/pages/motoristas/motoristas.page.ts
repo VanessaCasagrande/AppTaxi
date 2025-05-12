@@ -1,5 +1,5 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ViewWillEnter } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MotoristasService } from '../../service/motoristas.service';
@@ -12,7 +12,7 @@ import { MotoristasService } from '../../service/motoristas.service';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [IonicModule, CommonModule, FormsModule]
 })
-export class MotoristasPage implements OnInit {
+export class MotoristasPage implements OnInit, ViewWillEnter {
   motoristas: any[] = [];
   motorista: any = {
     nome: '',
@@ -22,16 +22,27 @@ export class MotoristasPage implements OnInit {
     status: 'ativo'
   };
   editando = false;
+  mostrarForm = false;
 
-  constructor(private motoristasService: MotoristasService) {}
+  constructor(private motoristasService: MotoristasService) {
+    // Carregar dados no construtor
+    this.carregarMotoristas();
+  }
 
   ngOnInit() {
+    // Removido o carregamento daqui
+  }
+
+  ionViewWillEnter() {
+    // Forçar recarregamento quando a página for acessada
     this.carregarMotoristas();
   }
 
   carregarMotoristas() {
+    console.log('Carregando motoristas...'); // Debug
     this.motoristasService.listar().subscribe({
       next: (dados) => {
+        console.log('Dados recebidos:', dados); // Debug
         this.motoristas = dados;
       },
       error: (erro) => {
@@ -40,12 +51,24 @@ export class MotoristasPage implements OnInit {
     });
   }
 
+  mostrarFormulario() {
+    this.mostrarForm = true;
+    this.editando = false;
+    this.limparFormulario();
+  }
+
+  editar(motorista: any) {
+    this.motorista = { ...motorista };
+    this.editando = true;
+    this.mostrarForm = true;
+  }
+
   salvar() {
     if (this.editando) {
       this.motoristasService.atualizar(this.motorista.id!, this.motorista).subscribe({
         next: () => {
           this.carregarMotoristas();
-          this.limparFormulario();
+          this.cancelar();
         },
         error: (erro) => {
           console.error('Erro ao atualizar motorista:', erro);
@@ -55,18 +78,13 @@ export class MotoristasPage implements OnInit {
       this.motoristasService.criar(this.motorista).subscribe({
         next: () => {
           this.carregarMotoristas();
-          this.limparFormulario();
+          this.cancelar();
         },
         error: (erro) => {
           console.error('Erro ao criar motorista:', erro);
         }
       });
     }
-  }
-
-  editar(motorista: any) {
-    this.motorista = { ...motorista };
-    this.editando = true;
   }
 
   excluir(id: number) {
@@ -82,6 +100,12 @@ export class MotoristasPage implements OnInit {
     }
   }
 
+  cancelar() {
+    this.mostrarForm = false;
+    this.editando = false;
+    this.limparFormulario();
+  }
+
   limparFormulario() {
     this.motorista = {
       nome: '',
@@ -90,6 +114,5 @@ export class MotoristasPage implements OnInit {
       email: '',
       status: 'ativo'
     };
-    this.editando = false;
   }
 }
