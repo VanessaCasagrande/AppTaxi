@@ -25,24 +25,18 @@ export class MotoristasPage implements OnInit, ViewWillEnter {
   mostrarForm = false;
 
   constructor(private motoristasService: MotoristasService) {
-    // Carregar dados no construtor
     this.carregarMotoristas();
   }
 
-  ngOnInit() {
-    // Removido o carregamento daqui
-  }
+  ngOnInit() {}
 
   ionViewWillEnter() {
-    // Forçar recarregamento quando a página for acessada
     this.carregarMotoristas();
   }
 
   carregarMotoristas() {
-    console.log('Carregando motoristas...'); // Debug
     this.motoristasService.listar().subscribe({
       next: (dados) => {
-        console.log('Dados recebidos:', dados); // Debug
         this.motoristas = dados;
       },
       error: (erro) => {
@@ -58,14 +52,24 @@ export class MotoristasPage implements OnInit, ViewWillEnter {
   }
 
   editar(motorista: any) {
-    this.motorista = { ...motorista };
+    // Garante que o ID seja string
+    this.motorista = { 
+      ...motorista,
+      id: motorista.id.toString()
+    };
     this.editando = true;
     this.mostrarForm = true;
   }
 
   salvar() {
     if (this.editando) {
-      this.motoristasService.atualizar(this.motorista.id!, this.motorista).subscribe({
+      // Garante que o ID seja string
+      const motoristaAtualizado = {
+        ...this.motorista,
+        id: this.motorista.id.toString()
+      };
+      
+      this.motoristasService.atualizar(motoristaAtualizado.id, motoristaAtualizado).subscribe({
         next: () => {
           this.carregarMotoristas();
           this.cancelar();
@@ -87,9 +91,9 @@ export class MotoristasPage implements OnInit, ViewWillEnter {
     }
   }
 
-  excluir(id: number) {
+  excluir(id: string) {
     if (confirm('Tem certeza que deseja excluir este motorista?')) {
-      this.motoristasService.excluir(id).subscribe({
+      this.motoristasService.excluir(id.toString()).subscribe({
         next: () => {
           this.carregarMotoristas();
         },
