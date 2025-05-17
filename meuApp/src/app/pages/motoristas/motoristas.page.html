@@ -18,7 +18,7 @@
     <ion-item *ngFor="let motorista of motoristas">
       <ion-label>
         <h2>{{ motorista.nome }}</h2>
-        <p>CNH: {{ motorista.cnh }}</p>
+        <p>CPF: {{ motorista.cpf }}</p>
         <p>Telefone: {{ motorista.telefone }}</p>
         <p>Email: {{ motorista.email }}</p>
         <p>
@@ -52,12 +52,30 @@
         <ion-input [(ngModel)]="motorista.nome"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked">CNH</ion-label>
-        <ion-input [(ngModel)]="motorista.cnh"></ion-input>
+        <ion-label position="stacked">CPF</ion-label>
+        <ion-input
+          type="text"
+          [(ngModel)]="motorista.cpf"
+          placeholder="000.000.000-00"
+          [maskito]="cpfMask"
+          [maskitoElement]="maskitoElement"
+          (ionChange)="onCpfChange($event)"
+          maxlength="11"
+          required
+        ></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Telefone</ion-label>
-        <ion-input [(ngModel)]="motorista.telefone"></ion-input>
+        <ion-input 
+          type="text"
+          [(ngModel)]="motorista.telefone"
+          placeholder="(00) 00000-0000"
+          [maskito]="telefoneMask"
+          [maskitoElement]="maskitoElement"
+          (ionChange)="onTelefoneChange($event)"
+          maxlength="11"
+          required>
+        </ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
