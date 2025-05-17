@@ -1,7 +1,8 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-veiculos',
   templateUrl: './veiculos.page.html',
@@ -9,11 +10,6 @@ import { IonicModule } from '@ionic/angular';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule]
 })
-export class VeiculosPage implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+export class VeiculosPage {
+  constructor() {}
 }

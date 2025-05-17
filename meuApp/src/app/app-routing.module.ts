@@ -1,46 +1,48 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { HomePage } from './pages/home/home.page';  // Caminho atualizado
-import { MotoristasPage } from './pages/motoristas/motoristas.page';
-import { CorridasPage } from './pages/corridas/corridas.page';
-import { ClientesPage } from './pages/clientes/clientes.page';
-import { VeiculosPage } from './pages/veiculos/veiculos.page';
-import { DashboardPage } from './pages/dashboard/dashboard.page';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full'
   },
   {
-    path: 'home',
-    component: HomePage
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
   },
   {
     path: 'dashboard',
-    component: DashboardPage
+    loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'motoristas',
-    component: MotoristasPage
-  },
-  {
-    path: 'corridas',
-    component: CorridasPage
+    loadChildren: () => import('./pages/motoristas/motoristas.module').then(m => m.MotoristasPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'clientes',
-    component: ClientesPage
+    loadChildren: () => import('./pages/clientes/clientes.module').then(m => m.ClientesPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'veiculos',
-    component: VeiculosPage
+    loadChildren: () => import('./pages/veiculos/veiculos.module').then(m => m.VeiculosPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'corridas',
+    loadChildren: () => import('./pages/corridas/corridas.module').then(m => m.CorridasPageModule),
+    canActivate: [AuthGuard]
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

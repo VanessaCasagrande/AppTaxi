@@ -1,7 +1,7 @@
+import { Component } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-corridas',
@@ -10,12 +10,6 @@ import { IonicModule } from '@ionic/angular';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule]
 })
-
-export class CorridasPage implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+export class CorridasPage {
+  constructor() {}
 }

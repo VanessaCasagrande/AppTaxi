@@ -3,6 +3,7 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuController } from '@ionic/angular';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -11,9 +12,17 @@ import { MenuController } from '@ionic/angular';
   standalone: false
 })
 export class AppComponent {
-  constructor(private menuCtrl: MenuController) {}
+  constructor(
+    private menuCtrl: MenuController,
+    private authService: AuthService
+  ) {}
 
   fecharMenu() {
     this.menuCtrl.close();
+  }
+
+  fazerLogout() {
+    this.authService.logout();
+    this.fecharMenu();
   }
 }

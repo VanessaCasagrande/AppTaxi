@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { Chart } from 'chart.js/auto';
+import { Chart } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,15 +10,15 @@ import { Chart } from 'chart.js/auto';
   standalone: true,
   imports: [IonicModule, CommonModule]
 })
-export class DashboardPage implements OnInit {
-  @ViewChild('corridasChart') corridasChart!: ElementRef;
-
+export class DashboardPage implements AfterViewInit {
+  @ViewChild('corridasChart') corridasChartRef!: ElementRef;
+  
   // Dados de exemplo
   totalMotoristas = 25;
   corridasHoje = 48;
   totalClientes = 156;
   faturamentoHoje = '1.250,00';
-
+  
   ultimasCorridas = [
     {
       motorista: 'João Silva',
@@ -43,18 +43,14 @@ export class DashboardPage implements OnInit {
     }
   ];
 
-  constructor() {}
-
-  ngOnInit() {
-    // Inicialização do gráfico será feita após a view ser carregada
-  }
-
   ngAfterViewInit() {
-    this.inicializarGrafico();
+    setTimeout(() => {
+      this.inicializarGrafico();
+    }, 100);
   }
 
   private inicializarGrafico() {
-    const ctx = this.corridasChart.nativeElement.getContext('2d');
+    const ctx = this.corridasChartRef.nativeElement.getContext('2d');
     
     new Chart(ctx, {
       type: 'line',
@@ -70,6 +66,7 @@ export class DashboardPage implements OnInit {
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             position: 'top',

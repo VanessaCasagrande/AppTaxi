@@ -1,20 +1,18 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
-import { IonicModule } from '@ionic/angular';
-
-import { CorridasPageRoutingModule } from './corridas-routing.module';
-
+import { RouterModule, Routes } from '@angular/router';
 import { CorridasPage } from './corridas.page';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: CorridasPage
+  }
+];
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    CorridasPageRoutingModule
-  ],
-  declarations: [CorridasPage]
+    RouterModule.forChild(routes),
+    CorridasPage
+  ]
 })
 export class CorridasPageModule {}
