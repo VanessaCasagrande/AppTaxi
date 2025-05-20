@@ -3,14 +3,47 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>clientes</ion-title>
+    <ion-title>Clientes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="mostrarFormulario()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">clientes</ion-title>
+      <ion-title size="large">Clientes</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <!-- Lista de Clientes -->
+  <ion-list *ngIf="!mostrarForm">
+    <ion-item *ngFor="let cliente of clientes">
+      <ion-label>
+        <h2>{{ cliente.nome }}</h2>
+        <p>CPF: {{ cliente.cpf }} | Telefone: {{ cliente.telefone }}</p>
+        <p>Email: {{ cliente.email }} | Status: {{ cliente.status }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button (click)="editar(cliente)">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+        <ion-button (click)="excluir(cliente.id!)" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <!-- Formulário de Cliente -->
+  <app-formulario-cliente
+    *ngIf="mostrarForm"
+    [cliente]="cliente"
+    [editando]="editando"
+    (salvar)="salvar($event)"
+    (cancelar)="cancelar()">
+  </app-formulario-cliente>
 </ion-content>

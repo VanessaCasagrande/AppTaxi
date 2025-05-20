@@ -1,0 +1,58 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>{{ editando ? 'Editar' : 'Novo' }} Cliente</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <form (ngSubmit)="onSubmit()">
+      <ion-item>
+        <ion-label position="stacked">Nome</ion-label>
+        <ion-input [(ngModel)]="cliente.nome" name="nome" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">CPF</ion-label>
+        <ion-input
+          type="text"
+          [(ngModel)]="cliente.cpf"
+          name="cpf"
+          placeholder="000.000.000-00"
+          [maskito]="cpfMask"
+          [maskitoElement]="maskitoElement"
+          (ionChange)="modificarCpf($event)"
+          maxlength="11"
+          required
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Telefone</ion-label>
+        <ion-input 
+          type="text"
+          [(ngModel)]="cliente.telefone"
+          name="telefone"
+          placeholder="(00) 00000-0000"
+          [maskito]="telefoneMask"
+          [maskitoElement]="maskitoElement"
+          (ionChange)="modificarTelefone($event)"
+          maxlength="11"
+          required>
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input [(ngModel)]="cliente.email" name="email" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Status</ion-label>
+        <ion-select [(ngModel)]="cliente.status" name="status" required>
+          <ion-select-option value="ativo">Ativo</ion-select-option>
+          <ion-select-option value="inativo">Inativo</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-button expand="block" type="submit">
+        {{ editando ? 'Atualizar' : 'Salvar' }}
+      </ion-button>
+      <ion-button expand="block" color="medium" type="button" (click)="onCancel()">
+        Cancelar
+      </ion-button>
+    </form>
+  </ion-card-content>
+</ion-card> 

@@ -2,7 +2,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { IonicModule, ViewWillEnter } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MotoristasService } from '../../service/motoristas.service';
+import { MotoristasService } from './service/motoristas.service';
 import { 
   cpfMask, 
   telefoneMask, 
@@ -12,6 +12,8 @@ import {
   formatCpfMask,
   formatTelefoneMask
 } from '../../shared/masks';
+import { FormularioMotoristaComponent } from './formulario-motorista/formulario-motorista.component';
+import { Motorista } from '../../models/motorista.type';
 
 @Component({
   selector: 'app-motoristas',
@@ -19,11 +21,11 @@ import {
   styleUrls: ['./motoristas.page.scss'],
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule, FormularioMotoristaComponent]
 })
 export class MotoristasPage implements OnInit, ViewWillEnter {
-  motoristas: any[] = [];
-  motorista: any = {
+  motoristas: Motorista[] = [];
+  motorista: Motorista = {
     nome: '',
     cpf: '',
     telefone: '',
@@ -49,18 +51,14 @@ export class MotoristasPage implements OnInit, ViewWillEnter {
   }
 
   carregarMotoristas() {
-    this.motoristasService.listar().subscribe({
-      next: (dados) => {
-        this.motoristas = dados.map(motorista => ({
-          ...motorista,
-          cpf: this.formatarCPF(motorista.cpf),
-          telefone: this.formatarTelefone(motorista.telefone)
-        }));
+    this.motoristasService.getList().subscribe(
+      (data) => {
+        this.motoristas = data;
       },
-      error: (erro) => {
-        console.error('Erro ao carregar motoristas:', erro);
+      (error) => {
+        console.error('Erro ao carregar motoristas', error);
       }
-    });
+    );
   }
 
   formatarCPF(cpf: string): string {
@@ -130,70 +128,6 @@ export class MotoristasPage implements OnInit, ViewWillEnter {
   mostrarFormulario() {
     this.mostrarForm = true;
     this.editando = false;
-    this.limparFormulario();
-  }
-
-  editar(motorista: any) {
-    this.motorista = { 
-      ...motorista,
-      id: motorista.id.toString(),
-      cpf: this.formatarCPF(motorista.cpf),
-      telefone: this.formatarTelefone(motorista.telefone)
-    };
-    this.editando = true;
-    this.mostrarForm = true;
-  }
-
-  salvar() {
-    const motoristaParaSalvar = {
-      ...this.motorista,
-      cpf: this.motorista.cpf.replace(/\D/g, '').slice(0, 11),
-      telefone: this.motorista.telefone.replace(/\D/g, '')
-    };
-
-    if (this.editando) {
-      this.motoristasService.atualizar(motoristaParaSalvar.id, motoristaParaSalvar).subscribe({
-        next: () => {
-          this.carregarMotoristas();
-          this.cancelar();
-        },
-        error: (erro) => {
-          console.error('Erro ao atualizar motorista:', erro);
-        }
-      });
-    } else {
-      this.motoristasService.criar(motoristaParaSalvar).subscribe({
-        next: () => {
-          this.carregarMotoristas();
-          this.cancelar();
-        },
-        error: (erro) => {
-          console.error('Erro ao criar motorista:', erro);
-        }
-      });
-    }
-  }
-
-  excluir(id: string) {
-    if (confirm('Tem certeza que deseja excluir este motorista?')) {
-      this.motoristasService.excluir(id.toString()).subscribe({
-        next: () => {
-          this.carregarMotoristas();
-        },
-        error: (erro) => {
-          console.error('Erro ao excluir motorista:', erro);
-        }
-      });
-    }
-  }
-
-  cancelar() {
-    this.mostrarForm = false;
-    this.editando = false;
-    this.limparFormulario();
-  }
-
-  limparFormulario() {
     this.motorista = {
       nome: '',
       cpf: '',
@@ -201,5 +135,45 @@ export class MotoristasPage implements OnInit, ViewWillEnter {
       email: '',
       status: 'ativo'
     };
+  }
+
+  editar(motorista: Motorista) {
+    this.motorista = { ...motorista };
+    this.editando = true;
+    this.mostrarForm = true;
+  }
+
+  salvar(motorista: Motorista) {
+    this.motoristasService.save(motorista).subscribe(
+      (data) => {
+        if (this.editando) {
+          const index = this.motoristas.findIndex(m => m.id === data.id);
+          if (index !== -1) {
+            this.motoristas[index] = data;
+          }
+        } else {
+          this.motoristas.push(data);
+        }
+        this.mostrarForm = false;
+      },
+      (error) => {
+        console.error('Erro ao salvar motorista', error);
+      }
+    );
+  }
+
+  excluir(id: number) {
+    this.motoristasService.remove({ id } as Motorista).subscribe(
+      () => {
+        this.motoristas = this.motoristas.filter(m => m.id !== id);
+      },
+      (error) => {
+        console.error('Erro ao excluir motorista', error);
+      }
+    );
+  }
+
+  cancelar() {
+    this.mostrarForm = false;
   }
 }

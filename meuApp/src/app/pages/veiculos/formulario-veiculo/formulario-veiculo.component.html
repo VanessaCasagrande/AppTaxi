@@ -1,0 +1,118 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Cadastro de Veículos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="veiculoForm">
+    <ion-list>
+      <ion-item>
+        <ion-input formControlName="placa" labelPlacement="floating" label="Placa" type="text"></ion-input>
+        <p>
+        @if(hasError('placa', 'required')) {
+          O campo é obrigatório
+        }
+        </p>
+      </ion-item>
+      <ion-item>
+        <ion-input formControlName="modelo" labelPlacement="floating" label="Modelo" type="text"></ion-input>
+        <p>
+        @if(hasError('modelo', 'required')) {
+          O campo é obrigatório
+        }
+        </p>
+      </ion-item>
+      <ion-item>
+        <ion-input formControlName="ano" labelPlacement="floating" label="Ano" type="text"></ion-input>
+        <p>
+        @if(hasError('ano', 'required')) {
+          O campo é obrigatório
+        }
+        </p>
+      </ion-item>
+      <ion-item>
+        <ion-input formControlName="marca" labelPlacement="floating" label="Marca" type="text"></ion-input>
+        <p>
+        @if(hasError('marca', 'required')) {
+          O campo é obrigatório
+        }
+        </p>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox formControlName="possuiArCondicionado" labelPlacement="end">Possui Ar-Condicionado</ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-select formControlName="quantidadePortas" label="Quantidade de Portas" label-placement="floating">
+          <ion-select-option value="2">2</ion-select-option>
+          <ion-select-option value="4">4</ion-select-option>
+        </ion-select>
+        <p>
+        @if(hasError('quantidadePortas', 'required')) {
+          O campo é obrigatório
+        }
+        </p>
+      </ion-item>
+      <ion-item>
+        <ion-input formControlName="capacidadePassageiros" labelPlacement="floating" label="Capacidade de Passageiros" type="number"></ion-input>
+        <p>
+        @if(hasError('capacidadePassageiros', 'required')) {
+          O campo é obrigatório
+        }
+        </p>
+      </ion-item>
+    </ion-list>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button [disabled]="veiculoForm.invalid" (click)="onSubmit()">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </form>
+</ion-content>
+
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>{{ editando ? 'Editar' : 'Novo' }} Veículo</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <form (ngSubmit)="onSubmit()">
+      <ion-item>
+        <ion-label position="stacked">Placa</ion-label>
+        <ion-input [(ngModel)]="veiculo.placa" name="placa" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Modelo</ion-label>
+        <ion-input [(ngModel)]="veiculo.modelo" name="modelo" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Marca</ion-label>
+        <ion-input [(ngModel)]="veiculo.marca" name="marca" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Ano</ion-label>
+        <ion-input type="number" [(ngModel)]="veiculo.ano" name="ano" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Cor</ion-label>
+        <ion-input [(ngModel)]="veiculo.cor" name="cor" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Status</ion-label>
+        <ion-select [(ngModel)]="veiculo.status" name="status" required>
+          <ion-select-option value="ativo">Ativo</ion-select-option>
+          <ion-select-option value="inativo">Inativo</ion-select-option>
+          <ion-select-option value="manutencao">Em Manutenção</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-button expand="block" type="submit">
+        {{ editando ? 'Atualizar' : 'Salvar' }}
+      </ion-button>
+      <ion-button expand="block" color="medium" type="button" (click)="onCancel()">
+        Cancelar
+      </ion-button>
+    </form>
+  </ion-card-content>
+</ion-card> 

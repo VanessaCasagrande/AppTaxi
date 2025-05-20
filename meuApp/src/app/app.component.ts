@@ -3,7 +3,7 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuController } from '@ionic/angular';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './services-login/auth.service';
 
 @Component({
   selector: 'app-root',
