@@ -13,11 +13,12 @@
         <ion-input
           type="text"
           [(ngModel)]="motorista.cpf"
-          name="cpf"
           placeholder="000.000.000-00"
+          name="cpf"
           [maskito]="cpfMask"
           [maskitoElement]="maskitoElement"
           required
+          maxlength="14"
         ></ion-input>
       </ion-item>
       <ion-item>

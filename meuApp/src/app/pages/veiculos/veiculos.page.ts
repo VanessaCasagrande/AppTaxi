@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { VeiculosService } from './service/veiculos.service';
 import { FormularioVeiculoComponent } from './formulario-veiculo/formulario-veiculo.component';
 import { Veiculo } from '../../models/veiculo.type';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-veiculos',
@@ -27,7 +28,10 @@ export class VeiculosPage implements OnInit, ViewWillEnter {
   editando = false;
   mostrarForm = false;
 
-  constructor(private veiculosService: VeiculosService) {
+  constructor(
+    private veiculosService: VeiculosService,
+    private router: Router
+  ) {
     this.carregarVeiculos();
   }
 
@@ -61,10 +65,12 @@ export class VeiculosPage implements OnInit, ViewWillEnter {
     };
   }
 
+  abrirNovoVeiculo() {
+    this.router.navigate(['veiculos/novo']);
+  }
+
   editar(veiculo: Veiculo) {
-    this.veiculo = { ...veiculo };
-    this.editando = true;
-    this.mostrarForm = true;
+    this.router.navigate(['veiculos/editar', veiculo.id]);
   }
 
   salvar(veiculo: Veiculo) {

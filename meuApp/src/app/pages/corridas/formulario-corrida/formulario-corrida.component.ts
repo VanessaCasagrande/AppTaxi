@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Corrida } from '../../../models/corrida.type';
 import { CalculadoraCorridaService } from '../service/calculadora-corrida.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import { ClientesService } from '../../clientes/service/clientes.service';
 import { MotoristasService } from '../../motoristas/service/motoristas.service';
@@ -13,6 +13,8 @@ import { VeiculosService } from '../../veiculos/service/veiculos.service';
 import { Cliente } from '../../../models/cliente.type';
 import { Motorista } from '../../../models/motorista.type';
 import { Veiculo } from '../../../models/veiculo.type';
+import { CorridasService } from '../service/corridas.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-formulario-corrida',
@@ -23,11 +25,21 @@ import { Veiculo } from '../../../models/veiculo.type';
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FormularioCorridaComponent implements AfterViewInit, OnInit {
-  @Input() corrida!: Corrida;
-  @Input() editando = false;
-  @Output() salvar = new EventEmitter<Corrida>();
-  @Output() cancelar = new EventEmitter<void>();
+  corrida: Corrida = {
+    clienteId: 0,
+    motoristaId: 0,
+    veiculoId: 0,
+    origem: '',
+    destino: '',
+    valor: 0,
+    status: 'pendente',
+    dataHora: new Date(),
+    distanciaKm: 0,
+    duracaoMinutos: 0
+  };
 
+  @Input() editando = false;
+  
   map!: L.Map;
   origemMarker?: L.Marker;
   destinoMarker?: L.Marker;
@@ -40,33 +52,57 @@ export class FormularioCorridaComponent implements AfterViewInit, OnInit {
   constructor(
     private calculadoraCorrida: CalculadoraCorridaService,
     private router: Router,
+    private route: ActivatedRoute,
     private clientesService: ClientesService,
     private motoristasService: MotoristasService,
-    private veiculosService: VeiculosService
+    private veiculosService: VeiculosService,
+    private corridasService: CorridasService
   ) {}
 
   ngOnInit() {
-    this.clientesService.getList().subscribe(clientes => this.clientes = clientes);
-    this.motoristasService.getAll().subscribe(motoristas => this.motoristas = motoristas);
-    this.veiculosService.getList().subscribe(veiculos => this.veiculos = veiculos);
+    // Carrega dados auxiliares separadamente
+    this.clientesService.getList().subscribe(clientes => {
+      this.clientes = clientes;
+      this.motoristasService.getAll().subscribe(motoristas => {
+        this.motoristas = motoristas;
+        this.veiculosService.getList().subscribe(veiculos => {
+          this.veiculos = veiculos;
+
+          // Só depois de carregar tudo, busca a corrida se for edição
+          const id = this.route.snapshot.paramMap.get('id');
+          if (id) {
+            this.editando = true;
+            this.corridasService.getById(+id).subscribe(corrida => {
+              this.corrida = {
+                ...corrida,
+                status: corrida.status as 'pendente' | 'em_andamento' | 'concluida' | 'cancelada',
+                dataHora: corrida.dataHora ? new Date(corrida.dataHora) : new Date()
+              };
+            });
+          }
+        });
+      });
+    });
   }
 
   ngAfterViewInit() {
-    this.map = L.map('map').setView([-28.672566, -49.369687], 16);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'Map data © OpenStreetMap contributors'
-    }).addTo(this.map);
+    setTimeout(() => {
+      this.map = L.map('map').setView([-28.672566, -49.369687], 16);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © OpenStreetMap contributors'
+      }).addTo(this.map);
 
-    this.map.on('click', (e: L.LeafletMouseEvent) => {
-      if (!this.origemMarker) {
-        this.origemMarker = L.marker(e.latlng, { draggable: true }).addTo(this.map);
-        this.corrida.origem = `${e.latlng.lat},${e.latlng.lng}`;
-      } else if (!this.destinoMarker) {
-        this.destinoMarker = L.marker(e.latlng, { draggable: true }).addTo(this.map);
-        this.corrida.destino = `${e.latlng.lat},${e.latlng.lng}`;
-        this.tracarRota();
-      }
-    });
+      this.map.on('click', (e: L.LeafletMouseEvent) => {
+        if (!this.origemMarker) {
+          this.origemMarker = L.marker(e.latlng, { draggable: true }).addTo(this.map);
+          this.corrida.origem = `${e.latlng.lat},${e.latlng.lng}`;
+        } else if (!this.destinoMarker) {
+          this.destinoMarker = L.marker(e.latlng, { draggable: true }).addTo(this.map);
+          this.corrida.destino = `${e.latlng.lat},${e.latlng.lng}`;
+          this.tracarRota();
+        }
+      });
+    }, 0);
   }
 
   tracarRota() {
@@ -93,13 +129,30 @@ export class FormularioCorridaComponent implements AfterViewInit, OnInit {
   }
 
   onSubmit() {
-    this.salvar.emit(this.corrida);
-    this.router.navigate(['/corridas']);
+    if (this.editando && this.corrida.id) {
+      this.corridasService.update(this.corrida.id, this.corrida).subscribe({
+        next: () => {
+          this.resetarMapa();
+          this.router.navigate(['/corridas']);
+        },
+        error: (error) => console.error('Erro ao atualizar corrida', error)
+      });
+    } else {
+      // Remova o campo id antes de criar
+      const novaCorrida = { ...this.corrida };
+      delete (novaCorrida as any).id;
+      this.corridasService.create(novaCorrida).subscribe({
+        next: () => {
+          this.resetarMapa();
+          this.router.navigate(['/corridas']);
+        },
+        error: (error) => console.error('Erro ao criar corrida', error)
+      });
+    }
   }
 
   onCancel() {
     this.resetarMapa();
-    this.cancelar.emit();
     this.router.navigate(['/corridas']);
   }
 
@@ -182,4 +235,4 @@ export class FormularioCorridaComponent implements AfterViewInit, OnInit {
       }
     }
   }
-} 
+}

@@ -1,11 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Cliente } from '../../../models/cliente.type';
 import { cpfMask, telefoneMask, maskitoElement } from '../../../shared/masks';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { ClientesService } from '../service/clientes.service';
 
 @Component({
   selector: 'app-formulario-cliente',
@@ -15,17 +16,35 @@ import { Router } from '@angular/router';
   imports: [IonicModule, CommonModule, FormsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class FormularioClienteComponent {
-  @Input() cliente!: Cliente;
-  @Input() editando = false;
-  @Output() salvar = new EventEmitter<Cliente>();
-  @Output() cancelar = new EventEmitter<void>();
+export class FormularioClienteComponent implements OnInit {
+  cliente: Cliente = {
+    nome: '',
+    cpf: '',
+    telefone: '',
+    email: '',
+    status: 'ativo'
+  };
+  editando = false;
 
   readonly cpfMask = cpfMask;
   readonly telefoneMask = telefoneMask;
   readonly maskitoElement = maskitoElement;
 
-  constructor(private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private clientesService: ClientesService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.editando = true;
+      this.clientesService.getById(+id).subscribe(cliente => {
+        this.cliente = cliente;
+      });
+    }
+  }
 
   modificarCpf(event: any) {
     const cpf = event.target.value;
@@ -72,12 +91,13 @@ export class FormularioClienteComponent {
   }
 
   onSubmit() {
-    this.salvar.emit(this.cliente);
-    this.router.navigate(['/clientes']);
+    this.clientesService.save(this.cliente).subscribe({
+      next: () => this.router.navigate(['/clientes']),
+      error: (error: any) => console.error('Erro ao salvar cliente', error)
+    });
   }
 
   onCancel() {
-    this.cancelar.emit();
     this.router.navigate(['/clientes']);
   }
-} 
+}

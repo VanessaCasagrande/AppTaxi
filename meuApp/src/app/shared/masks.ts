@@ -9,7 +9,7 @@ import {
 const cpfMask = maskitoNumberOptionsGenerator({
   decimalSeparator: '',
   min: 0,
-  max: 99999999999, // Limita a 11 dígitos
+  max: 99999999999, 
   precision: 0,
   thousandSeparator: '.',
   decimalPseudoSeparators: ['.', '-'],
@@ -21,7 +21,7 @@ const cpfMask = maskitoNumberOptionsGenerator({
 const telefoneMask = maskitoNumberOptionsGenerator({
   decimalSeparator: '',
   min: 0,
-  max: 99999999999, // Limita a 11 dígitos
+  max: 99999999999, 
   precision: 0,
   thousandSeparator: ' ',
   decimalPseudoSeparators: ['(', ')', ' ', '-'],

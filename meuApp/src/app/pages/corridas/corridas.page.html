@@ -15,7 +15,7 @@
   </ion-header>
 
   <div class="ion-padding">
-    <ion-button expand="block" (click)="mostrarForm = true">
+    <ion-button expand="block" (click)="abrirNovaCorrida()">
       Nova Corrida
     </ion-button>
 
@@ -23,7 +23,8 @@
       <ion-item *ngFor="let corrida of corridas">
         <ion-label>
           <h2>{{ corrida.origem }} → {{ corrida.destino }}</h2>
-          <p>Motorista: {{ corrida.motoristaId }}</p>
+          <p>Cliente: {{ getClienteNome(corrida.clienteId) }}</p>
+          <p>Motorista: {{ getMotoristaNome(corrida.motoristaId) }}</p>
           <p>Status: {{ corrida.status }}</p>
         </ion-label>
         <ion-button fill="clear" color="primary" slot="end" (click)="editar(corrida)">
@@ -34,13 +35,5 @@
         </ion-button>
       </ion-item>
     </ion-list>
-
-    <app-formulario-corrida
-      *ngIf="mostrarForm"
-      [corrida]="corrida"
-      [editando]="editando"
-      (salvar)="salvar($event)"
-      (cancelar)="mostrarForm = false"
-    ></app-formulario-corrida>
   </div>
 </ion-content>

@@ -15,7 +15,9 @@ export class VeiculosService {
   getList(): Observable<Veiculo[]> {
     return this.http.get<Veiculo[]>(this.apiUrl);
   }
-
+   getById(id: number): Observable<Veiculo> {
+    return this.http.get<Veiculo>(`${this.apiUrl}/${id}`);
+  }
   save(veiculo: Veiculo): Observable<Veiculo> {
     if (veiculo.id) {
       return this.http.put<Veiculo>(`${this.apiUrl}/${veiculo.id}`, veiculo);

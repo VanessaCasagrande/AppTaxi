@@ -41,16 +41,18 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/corridas/formulario-corrida/formulario-corrida.component').then(m => m.FormularioCorridaComponent),
     canActivate: [AuthGuard]
   },
+  // Motoristas
   {
-    path: 'veiculos/novo',
-    loadComponent: () => import('./pages/veiculos/formulario-veiculo/formulario-veiculo.component').then(m => m.FormularioVeiculoComponent),
+    path: 'motoristas/novo',
+    loadComponent: () => import('./pages/motoristas/formulario-motorista/formulario-motorista.component').then(m => m.FormularioMotoristaComponent),
     canActivate: [AuthGuard]
   },
   {
-    path: 'veiculos/editar/:id',
-    loadComponent: () => import('./pages/veiculos/formulario-veiculo/formulario-veiculo.component').then(m => m.FormularioVeiculoComponent),
+    path: 'motoristas/editar/:id',
+    loadComponent: () => import('./pages/motoristas/formulario-motorista/formulario-motorista.component').then(m => m.FormularioMotoristaComponent),
     canActivate: [AuthGuard]
   },
+  // Clientes
   {
     path: 'clientes/novo',
     loadComponent: () => import('./pages/clientes/formulario-cliente/formulario-cliente.component').then(m => m.FormularioClienteComponent),
@@ -61,14 +63,26 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/clientes/formulario-cliente/formulario-cliente.component').then(m => m.FormularioClienteComponent),
     canActivate: [AuthGuard]
   },
+  // Veículos
   {
-    path: 'motoristas/novo',
-    loadComponent: () => import('./pages/motoristas/formulario-motorista/formulario-motorista.component').then(m => m.FormularioMotoristaComponent),
+    path: 'veiculos/novo',
+    loadComponent: () => import('./pages/veiculos/formulario-veiculo/formulario-veiculo.component').then(m => m.FormularioVeiculoComponent),
     canActivate: [AuthGuard]
   },
   {
-    path: 'motoristas/editar/:id',
-    loadComponent: () => import('./pages/motoristas/formulario-motorista/formulario-motorista.component').then(m => m.FormularioMotoristaComponent),
+    path: 'veiculos/editar/:id',
+    loadComponent: () => import('./pages/veiculos/formulario-veiculo/formulario-veiculo.component').then(m => m.FormularioVeiculoComponent),
+    canActivate: [AuthGuard]
+  },
+  // Corridas
+  {
+    path: 'corridas/novo',
+    loadComponent: () => import('./pages/corridas/formulario-corrida/formulario-corrida.component').then(m => m.FormularioCorridaComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'corridas/editar/:id',
+    loadComponent: () => import('./pages/corridas/formulario-corrida/formulario-corrida.component').then(m => m.FormularioCorridaComponent),
     canActivate: [AuthGuard]
   },
   {

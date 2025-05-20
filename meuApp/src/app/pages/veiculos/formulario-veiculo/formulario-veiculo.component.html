@@ -8,117 +8,49 @@
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="veiculoForm">
-    <ion-list>
-      <ion-item>
-        <ion-input formControlName="placa" labelPlacement="floating" label="Placa" type="text"></ion-input>
-        <p *ngIf="hasError('placa', 'required')" class="error-message">
-          O campo é obrigatório
-        </p>
-      </ion-item>
-      <ion-item>
-        <ion-input formControlName="modelo" labelPlacement="floating" label="Modelo" type="text"></ion-input>
-        <p *ngIf="hasError('modelo', 'required')" class="error-message">
-          O campo é obrigatório
-        </p>
-      </ion-item>
-      <ion-item>
-        <ion-input formControlName="marca" labelPlacement="floating" label="Marca" type="text"></ion-input>
-        <p *ngIf="hasError('marca', 'required')" class="error-message">
-          O campo é obrigatório
-        </p>
-      </ion-item>
-      <ion-item>
-        <ion-input formControlName="ano" labelPlacement="floating" label="Ano" type="number" min="1900" max="2024"></ion-input>
-        <p *ngIf="hasError('ano', 'required')" class="error-message">
-          O campo é obrigatório
-        </p>
-        <p *ngIf="hasError('ano', 'min') || hasError('ano', 'max')" class="error-message">
-          O ano deve estar entre 1900 e 2024
-        </p>
-      </ion-item>
-      <ion-item>
-        <ion-input formControlName="cor" labelPlacement="floating" label="Cor" type="text"></ion-input>
-        <p *ngIf="hasError('cor', 'required')" class="error-message">
-          O campo é obrigatório
-        </p>
-      </ion-item>
-      <ion-item>
-        <ion-select formControlName="status" label="Status" label-placement="floating">
-          <ion-select-option value="ativo">Ativo</ion-select-option>
-          <ion-select-option value="inativo">Inativo</ion-select-option>
-          <ion-select-option value="manutencao">Em Manutenção</ion-select-option>
-        </ion-select>
-        <p *ngIf="hasError('status', 'required')" class="error-message">
-          O campo é obrigatório
-        </p>
-      </ion-item>
-    </ion-list>
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button [disabled]="veiculoForm.invalid" (click)="onSubmit()">
-        <ion-icon name="checkmark"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
-  </form>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ editando ? 'Editar' : 'Novo' }} Veículo</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form (ngSubmit)="onSubmit()">
+        <ion-list>
+          <ion-item>
+            <ion-label position="stacked">Placa</ion-label>
+            <ion-input [(ngModel)]="veiculo.placa" name="placa" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Modelo</ion-label>
+            <ion-input [(ngModel)]="veiculo.modelo" name="modelo" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Marca</ion-label>
+            <ion-input [(ngModel)]="veiculo.marca" name="marca" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Ano</ion-label>
+            <ion-input [(ngModel)]="veiculo.ano" name="ano" type="number" min="1900" max="2100" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Cor</ion-label>
+            <ion-input [(ngModel)]="veiculo.cor" name="cor" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Status</ion-label>
+            <ion-select [(ngModel)]="veiculo.status" name="status" required>
+              <ion-select-option value="ativo">Ativo</ion-select-option>
+              <ion-select-option value="inativo">Inativo</ion-select-option>
+              <ion-select-option value="manutencao">Em Manutenção</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+        <ion-button expand="block" type="submit">
+          {{ editando ? 'Atualizar' : 'Salvar' }}
+        </ion-button>
+        <ion-button expand="block" color="medium" type="button" (click)="onCancel()">
+          Cancelar
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
-
-<ion-card>
-  <ion-card-header>
-    <ion-card-title>{{ editando ? 'Editar' : 'Novo' }} Veículo</ion-card-title>
-  </ion-card-header>
-  <ion-card-content>
-    <form [formGroup]="veiculoForm" (ngSubmit)="onSubmit()">
-      <ion-list>
-        <ion-item>
-          <ion-input formControlName="placa" labelPlacement="floating" label="Placa" type="text"></ion-input>
-          <p *ngIf="hasError('placa', 'required')" class="error-message">
-            O campo é obrigatório
-          </p>
-        </ion-item>
-        <ion-item>
-          <ion-input formControlName="modelo" labelPlacement="floating" label="Modelo" type="text"></ion-input>
-          <p *ngIf="hasError('modelo', 'required')" class="error-message">
-            O campo é obrigatório
-          </p>
-        </ion-item>
-        <ion-item>
-          <ion-input formControlName="marca" labelPlacement="floating" label="Marca" type="text"></ion-input>
-          <p *ngIf="hasError('marca', 'required')" class="error-message">
-            O campo é obrigatório
-          </p>
-        </ion-item>
-        <ion-item>
-          <ion-input formControlName="ano" labelPlacement="floating" label="Ano" type="number" min="1900" max="2024"></ion-input>
-          <p *ngIf="hasError('ano', 'required')" class="error-message">
-            O campo é obrigatório
-          </p>
-          <p *ngIf="hasError('ano', 'min') || hasError('ano', 'max')" class="error-message">
-            O ano deve estar entre 1900 e 2024
-          </p>
-        </ion-item>
-        <ion-item>
-          <ion-input formControlName="cor" labelPlacement="floating" label="Cor" type="text"></ion-input>
-          <p *ngIf="hasError('cor', 'required')" class="error-message">
-            O campo é obrigatório
-          </p>
-        </ion-item>
-        <ion-item>
-          <ion-select formControlName="status" label="Status" label-placement="floating">
-            <ion-select-option value="ativo">Ativo</ion-select-option>
-            <ion-select-option value="inativo">Inativo</ion-select-option>
-            <ion-select-option value="manutencao">Em Manutenção</ion-select-option>
-          </ion-select>
-          <p *ngIf="hasError('status', 'required')" class="error-message">
-            O campo é obrigatório
-          </p>
-        </ion-item>
-      </ion-list>
-      <ion-button expand="block" type="submit" [disabled]="veiculoForm.invalid">
-        {{ editando ? 'Atualizar' : 'Salvar' }}
-      </ion-button>
-      <ion-button expand="block" color="medium" type="button" (click)="onCancel()">
-        Cancelar
-      </ion-button>
-    </form>
-  </ion-card-content>
-</ion-card> 

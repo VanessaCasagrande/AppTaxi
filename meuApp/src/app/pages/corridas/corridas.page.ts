@@ -1,41 +1,40 @@
 import { Component, OnInit } from '@angular/core';
+import { CorridasService } from './service/corridas.service';
+import { ClientesService } from '../clientes/service/clientes.service';
+import { MotoristasService } from '../motoristas/service/motoristas.service';
+import { Corrida } from '../../models/corrida.type';
+import { Cliente } from '../../models/cliente.type';
+import { Motorista } from '../../models/motorista.type';
+import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CorridasService } from './service/corridas.service';
-import { Corrida } from '../../models/corrida.type';
-import { RouterModule } from '@angular/router';
-import { FormularioCorridaComponent } from './formulario-corrida/formulario-corrida.component';
 
 @Component({
   selector: 'app-corridas',
   templateUrl: './corridas.page.html',
   styleUrls: ['./corridas.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, RouterModule, FormularioCorridaComponent]
+  imports: [
+    IonicModule,
+    CommonModule
+  ]
 })
 export class CorridasPage implements OnInit {
   corridas: Corrida[] = [];
-  corrida: Corrida = {
-    clienteId: 0,
-    motoristaId: 0,
-    veiculoId: 0,
-    origem: '',
-    destino: '',
-    valor: 0,
-    status: 'pendente',
-    dataHora: new Date(),
-    distanciaKm: 0,
-    duracaoMinutos: 0
-  };
-  editando = false;
-  mostrarForm = false;
+  clientes: Cliente[] = [];
+  motoristas: Motorista[] = [];
 
-  constructor(private corridasService: CorridasService) {}
+  constructor(
+    private corridasService: CorridasService,
+    private clientesService: ClientesService,
+    private motoristasService: MotoristasService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.carregarCorridas();
-    this.mostrarFormulario();
+    this.clientesService.getList().subscribe(clientes => this.clientes = clientes);
+    this.motoristasService.getAll().subscribe(motoristas => this.motoristas = motoristas);
   }
 
   carregarCorridas() {
@@ -49,62 +48,18 @@ export class CorridasPage implements OnInit {
     });
   }
 
-  mostrarFormulario() {
-    this.editando = false;
-    this.corrida = {
-      clienteId: 0,
-      motoristaId: 0,
-      veiculoId: 0,
-      origem: '',
-      destino: '',
-      valor: 0,
-      status: 'pendente',
-      dataHora: new Date(),
-      distanciaKm: 0,
-      duracaoMinutos: 0
-    };
-    this.mostrarForm = false;
+  abrirNovaCorrida() {
+    this.router.navigate(['corridas/novo']);
   }
 
   editar(corrida: Corrida) {
-    this.corrida = { ...corrida };
-    this.editando = true;
-    this.mostrarForm = true;
-  }
-
-  salvar(corrida: Corrida) {
-    if (this.editando && corrida.id) {
-      this.corridasService.update(corrida.id, corrida).subscribe({
-        next: (data: Corrida) => {
-          const index = this.corridas.findIndex(c => c.id === data.id);
-          if (index !== -1) {
-            this.corridas[index] = data;
-          }
-          this.editando = false;
-          this.mostrarForm = false;
-        },
-        error: (error: Error) => {
-          console.error('Erro ao atualizar corrida', error);
-        }
-      });
-    } else {
-      this.corridasService.create(corrida).subscribe({
-        next: (data: Corrida) => {
-          this.corridas.push(data);
-          this.editando = false;
-          this.mostrarForm = false;
-        },
-        error: (error: Error) => {
-          console.error('Erro ao criar corrida', error);
-        }
-      });
-    }
+    this.router.navigate(['corridas/editar', corrida.id]);
   }
 
   excluir(id: number) {
     this.corridasService.delete(id).subscribe({
       next: () => {
-        this.corridas = this.corridas.filter(c => c.id !== id);
+        this.carregarCorridas();
       },
       error: (error: Error) => {
         console.error('Erro ao excluir corrida', error);
@@ -112,8 +67,11 @@ export class CorridasPage implements OnInit {
     });
   }
 
-  cancelar() {
-    this.editando = false;
-    this.mostrarForm = false;
+  getClienteNome(clienteId: number): string {
+    return this.clientes.find(c => c.id === clienteId)?.nome || 'Cliente não encontrado';
+  }
+
+  getMotoristaNome(motoristaId: number): string {
+    return this.motoristas.find(m => m.id === motoristaId)?.nome || 'Motorista não encontrado';
   }
 }

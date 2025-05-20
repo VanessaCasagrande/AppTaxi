@@ -10,7 +10,7 @@ export class ClientesService {
 
   constructor(private http: HttpClient) { }
 
-  getById(clienteId: string) {
+  getById(clienteId: string | number) {
     return this.http.get<Cliente>(`${this.API_URL}/${clienteId}`);
   }
 
@@ -33,4 +33,4 @@ export class ClientesService {
   remove(cliente: Cliente) {
     return this.http.delete<Cliente>(`${this.API_URL}/${cliente.id}`);
   }
-} 
+}

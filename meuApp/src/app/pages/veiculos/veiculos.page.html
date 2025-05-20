@@ -15,7 +15,7 @@
   </ion-header>
 
   <div class="ion-padding">
-    <ion-button expand="block" (click)="mostrarForm = true">
+    <ion-button expand="block" (click)="abrirNovoVeiculo()">
       Novo Veículo
     </ion-button>
 
@@ -34,13 +34,5 @@
         </ion-button>
       </ion-item>
     </ion-list>
-
-    <app-formulario-veiculo
-      *ngIf="mostrarForm"
-      [veiculo]="veiculo"
-      [editando]="editando"
-      (salvar)="salvar($event)"
-      (cancelar)="mostrarForm = false"
-    ></app-formulario-veiculo>
   </div>
 </ion-content>

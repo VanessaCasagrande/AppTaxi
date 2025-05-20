@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, Output, CUSTOM_ELEMENTS_SCHEMA } from '
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MotoristasService } from '../service/motoristas.service'; // ajuste o caminho se necessário
 import { 
   cpfMask, 
   telefoneMask, 
@@ -32,6 +34,22 @@ export class FormularioMotoristaComponent {
   cpfMask = cpfMask;
   telefoneMask = telefoneMask;
   maskitoElement = maskitoElement;
+
+  constructor(
+    private route: ActivatedRoute,
+    private motoristasService: MotoristasService,
+    private router: Router // adicione aqui
+  ) {}
+
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.editando = true;
+      this.motoristasService.getById(+id).subscribe(motorista => {
+        this.motorista = motorista;
+      });
+    }
+  }
 
   modificarCpf(event: any) {
     const cpf = event.target.value;
@@ -84,10 +102,20 @@ export class FormularioMotoristaComponent {
   }
 
   onSubmit() {
-    this.salvar.emit(this.motorista);
+    if (this.editando && this.motorista.id) {
+      this.motoristasService.update(this.motorista.id, this.motorista).subscribe({
+        next: () => this.router.navigate(['/motoristas']),
+        error: (error) => console.error('Erro ao atualizar motorista', error)
+      });
+    } else {
+      this.motoristasService.create(this.motorista).subscribe({
+        next: () => this.router.navigate(['/motoristas']),
+        error: (error) => console.error('Erro ao criar motorista', error)
+      });
+    }
   }
 
   onCancel() {
-    this.cancelar.emit();
+    this.router.navigate(['/motoristas']);
   }
 }

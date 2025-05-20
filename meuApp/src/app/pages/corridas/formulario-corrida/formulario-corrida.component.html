@@ -55,6 +55,16 @@
           <ion-input [value]="corrida.valor | currency:'BRL'" readonly></ion-input>
         </ion-item>
 
+        <ion-item>
+          <ion-label position="stacked">Status</ion-label>
+          <ion-select [(ngModel)]="corrida.status" name="status" required>
+            <ion-select-option value="pendente">Pendente</ion-select-option>
+            <ion-select-option value="em_andamento">Em andamento</ion-select-option>
+            <ion-select-option value="finalizada">Finalizada</ion-select-option>
+            <ion-select-option value="cancelada">Cancelada</ion-select-option>
+          </ion-select>
+        </ion-item>
+
         <ion-item lines="none">
           <ion-button expand="block" color="success" (click)="onSubmit()">
             <ion-icon name="save" slot="start"></ion-icon>
@@ -71,4 +81,4 @@
       </ion-list>
     </div>
   </div>
-</div> 
+</div>

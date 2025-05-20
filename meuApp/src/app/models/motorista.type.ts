@@ -1,5 +1,5 @@
 export type Motorista = {
-  id?: string;
+  id?: number;
   nome: string;
   cpf: string;
   cnh: string;

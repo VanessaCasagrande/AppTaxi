@@ -36,10 +36,11 @@
 }
 
 #map {
-  height: 100%;
   width: 100%;
-  min-height: 600px;
-  min-width: 600px;
+  height: 400px !important;
+  min-height: 300px !important;
+  margin-bottom: 16px;
+  background: #eaeaea;
 }
 
 .corrida-dados {

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ClientesService } from './service/clientes.service';
 import { FormularioClienteComponent } from './formulario-cliente/formulario-cliente.component';
 import { Cliente } from '../../models/cliente.type';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-clientes',
@@ -26,7 +27,7 @@ export class ClientesPage implements OnInit, ViewWillEnter {
   editando = false;
   mostrarForm = false;
 
-  constructor(private clientesService: ClientesService) {
+  constructor(private clientesService: ClientesService, private router: Router) {
     this.carregarClientes();
   }
 
@@ -59,10 +60,12 @@ export class ClientesPage implements OnInit, ViewWillEnter {
     };
   }
 
+  abrirNovoCliente() {
+    this.router.navigate(['clientes/novo']);
+  }
+
   editar(cliente: Cliente) {
-    this.cliente = { ...cliente };
-    this.editando = true;
-    this.mostrarForm = true;
+    this.router.navigate(['clientes/editar', cliente.id]);
   }
 
   salvar(cliente: Cliente) {
