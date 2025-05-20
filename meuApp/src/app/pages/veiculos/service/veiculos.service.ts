@@ -1,36 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Veiculo } from '../../models/veiculo.type';
+import { Veiculo } from '../../../models/veiculo.type';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VeiculosService {
-  private readonly API_URL = 'http://localhost:3000/veiculos';
+  private apiUrl = `${environment.apiUrl}/veiculos`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getById(veiculoId: string) {
-    return this.http.get<Veiculo>(`${this.API_URL}/${veiculoId}`);
+  getList(): Observable<Veiculo[]> {
+    return this.http.get<Veiculo[]>(this.apiUrl);
   }
 
-  getList() {
-    return this.http.get<Veiculo[]>(this.API_URL);
+  save(veiculo: Veiculo): Observable<Veiculo> {
+    if (veiculo.id) {
+      return this.http.put<Veiculo>(`${this.apiUrl}/${veiculo.id}`, veiculo);
+    }
+    return this.http.post<Veiculo>(this.apiUrl, veiculo);
   }
 
-  private add(veiculo: Veiculo) {
-    return this.http.post<Veiculo>(this.API_URL, veiculo);
-  }
-
-  private update(veiculo: Veiculo) {
-    return this.http.put<Veiculo>(`${this.API_URL}/${veiculo.id}`, veiculo);
-  }
-
-  save(veiculo: Veiculo) {
-    return veiculo.id ? this.update(veiculo) : this.add(veiculo);
-  }
-
-  remove(veiculo: Veiculo) {
-    return this.http.delete<Veiculo>(`${this.API_URL}/${veiculo.id}`);
+  remove(veiculo: Veiculo): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${veiculo.id}`);
   }
 } 

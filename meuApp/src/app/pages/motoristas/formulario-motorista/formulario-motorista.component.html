@@ -17,8 +17,6 @@
           placeholder="000.000.000-00"
           [maskito]="cpfMask"
           [maskitoElement]="maskitoElement"
-          (ionChange)="modificarCpf($event)"
-          maxlength="11"
           required
         ></ion-input>
       </ion-item>
@@ -31,10 +29,8 @@
           placeholder="(00) 00000-0000"
           [maskito]="telefoneMask"
           [maskitoElement]="maskitoElement"
-          (ionChange)="modificarTelefone($event)"
-          maxlength="11"
-          required>
-        </ion-input>
+          required
+        ></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
@@ -55,4 +51,4 @@
       </ion-button>
     </form>
   </ion-card-content>
-</ion-card> 
+</ion-card>

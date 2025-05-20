@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Cliente } from '../../../models/cliente.type';
 import { cpfMask, telefoneMask, maskitoElement } from '../../../shared/masks';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-formulario-cliente',
@@ -23,6 +24,8 @@ export class FormularioClienteComponent {
   readonly cpfMask = cpfMask;
   readonly telefoneMask = telefoneMask;
   readonly maskitoElement = maskitoElement;
+
+  constructor(private router: Router) {}
 
   modificarCpf(event: any) {
     const cpf = event.target.value;
@@ -70,9 +73,11 @@ export class FormularioClienteComponent {
 
   onSubmit() {
     this.salvar.emit(this.cliente);
+    this.router.navigate(['/clientes']);
   }
 
   onCancel() {
     this.cancelar.emit();
+    this.router.navigate(['/clientes']);
   }
 } 

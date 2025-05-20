@@ -11,8 +11,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forChild(routes),
-    CorridasPage
+    RouterModule.forChild(routes)
   ]
 })
 export class CorridasPageModule {}

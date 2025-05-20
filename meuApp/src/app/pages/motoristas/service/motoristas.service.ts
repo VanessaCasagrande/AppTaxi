@@ -1,37 +1,34 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Motorista } from '../../../models/motorista.type';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MotoristasService {
+  private apiUrl = `${environment.apiUrl}/motoristas`;
 
-  private readonly API_URL = 'http://localhost:3000/motoristas';
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  getById(motoristaId: string) {
-    return this.http.get<Motorista>(`${this.API_URL}/${motoristaId}`);
+  getAll(): Observable<Motorista[]> {
+    return this.http.get<Motorista[]>(this.apiUrl);
   }
 
-  getList() {
-    return this.http.get<Motorista[]>(this.API_URL);
+  getById(id: number): Observable<Motorista> {
+    return this.http.get<Motorista>(`${this.apiUrl}/${id}`);
   }
 
-  private add(motorista: Motorista) {
-    return this.http.post<Motorista>(this.API_URL, motorista);
+  create(motorista: Motorista): Observable<Motorista> {
+    return this.http.post<Motorista>(this.apiUrl, motorista);
   }
 
-  private update(motorista: Motorista) {
-    return this.http.put<Motorista>(`${this.API_URL}/${motorista.id}`, motorista);
+  update(id: number, motorista: Motorista): Observable<Motorista> {
+    return this.http.put<Motorista>(`${this.apiUrl}/${id}`, motorista);
   }
 
-  save(motorista: Motorista) {
-    return motorista.id ? this.update(motorista) : this.add(motorista);
-  }
-
-  remove(motorista: Motorista) {
-    return this.http.delete<Motorista>(`${this.API_URL}/${motorista.id}`);
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 } 

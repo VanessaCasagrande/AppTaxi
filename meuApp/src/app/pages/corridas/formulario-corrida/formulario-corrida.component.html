@@ -1,91 +1,74 @@
-<ion-card>
-  <ion-card-header>
-    <ion-card-title>{{ editando ? 'Editar' : 'Nova' }} Corrida</ion-card-title>
-  </ion-card-header>
-  <ion-card-content>
-    <form (ngSubmit)="onSubmit()">
-      <ion-item>
-        <ion-label position="stacked">Cliente</ion-label>
-        <ion-select [(ngModel)]="corrida.clienteId" name="clienteId" required>
-          <ion-select-option [value]="1">Cliente 1</ion-select-option>
-          <ion-select-option [value]="2">Cliente 2</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Motorista</ion-label>
-        <ion-select [(ngModel)]="corrida.motoristaId" name="motoristaId" required>
-          <ion-select-option [value]="1">Motorista 1</ion-select-option>
-          <ion-select-option [value]="2">Motorista 2</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Veículo</ion-label>
-        <ion-select [(ngModel)]="corrida.veiculoId" name="veiculoId" required>
-          <ion-select-option [value]="1">Veículo 1</ion-select-option>
-          <ion-select-option [value]="2">Veículo 2</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Origem</ion-label>
-        <ion-input [(ngModel)]="corrida.origem" name="origem" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Destino</ion-label>
-        <ion-input [(ngModel)]="corrida.destino" name="destino" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Distância (km)</ion-label>
-        <ion-input 
-          type="number" 
-          [(ngModel)]="corrida.distanciaKm" 
-          name="distanciaKm" 
-          (ionChange)="calcularValor()"
-          required>
-        </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Duração (minutos)</ion-label>
-        <ion-input 
-          type="number" 
-          [(ngModel)]="corrida.duracaoMinutos" 
-          name="duracaoMinutos" 
-          (ionChange)="calcularValor()"
-          required>
-        </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Valor Calculado</ion-label>
-        <ion-input 
-          type="number" 
-          [(ngModel)]="corrida.valor" 
-          name="valor" 
-          readonly>
-        </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Status</ion-label>
-        <ion-select [(ngModel)]="corrida.status" name="status" required>
-          <ion-select-option value="pendente">Pendente</ion-select-option>
-          <ion-select-option value="em_andamento">Em Andamento</ion-select-option>
-          <ion-select-option value="concluida">Concluída</ion-select-option>
-          <ion-select-option value="cancelada">Cancelada</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Data/Hora</ion-label>
-        <ion-datetime
-          [(ngModel)]="corrida.dataHora"
-          name="dataHora"
-          display-format="DD/MM/YYYY HH:mm"
-          required>
-        </ion-datetime>
-      </ion-item>
-      <ion-button expand="block" type="submit">
-        {{ editando ? 'Atualizar' : 'Salvar' }}
-      </ion-button>
-      <ion-button expand="block" color="medium" type="button" (click)="onCancel()">
-        Cancelar
-      </ion-button>
-    </form>
-  </ion-card-content>
-</ion-card> 
+<div class="corrida-main-container">
+  <div class="corrida-card">
+    <div class="corrida-mapa">
+      <div id="map"></div>
+    </div>
+    <div class="corrida-dados">
+      <ion-list lines="none">
+        <ion-item>
+          <ion-label position="stacked">Cliente</ion-label>
+          <ion-select [(ngModel)]="corrida.clienteId" name="clienteId" required>
+            <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.id">
+              {{ cliente.nome }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Motorista</ion-label>
+          <ion-select [(ngModel)]="corrida.motoristaId" name="motoristaId" required>
+            <ion-select-option *ngFor="let motorista of motoristas" [value]="motorista.id">
+              {{ motorista.nome }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Veículo</ion-label>
+          <ion-select [(ngModel)]="corrida.veiculoId" name="veiculoId" required>
+            <ion-select-option *ngFor="let veiculo of veiculos" [value]="veiculo.id">
+              {{ veiculo.modelo }} - {{ veiculo.placa }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Origem</ion-label>
+          <ion-input [(ngModel)]="corrida.origem" name="origem" (blur)="geocodificarOrigem()" required></ion-input>
+          <ion-button slot="end" (click)="usarGeolocalizacao()" fill="clear" size="small">
+            <ion-icon name="locate"></ion-icon>
+          </ion-button>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Destino</ion-label>
+          <ion-input [(ngModel)]="corrida.destino" name="destino" (blur)="geocodificarDestino()" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Distância (km)</ion-label>
+          <ion-input [value]="corrida.distanciaKm | number:'1.2-2'" readonly></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Valor (R$)</ion-label>
+          <ion-input [value]="corrida.valor | currency:'BRL'" readonly></ion-input>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-button expand="block" color="success" (click)="onSubmit()">
+            <ion-icon name="save" slot="start"></ion-icon>
+            Salvar Corrida
+          </ion-button>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-button expand="block" color="medium" (click)="onCancel()">
+            <ion-icon name="close" slot="start"></ion-icon>
+            Cancelar
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
+</div> 

@@ -12,56 +12,45 @@
     <ion-list>
       <ion-item>
         <ion-input formControlName="placa" labelPlacement="floating" label="Placa" type="text"></ion-input>
-        <p>
-        @if(hasError('placa', 'required')) {
+        <p *ngIf="hasError('placa', 'required')" class="error-message">
           O campo é obrigatório
-        }
         </p>
       </ion-item>
       <ion-item>
         <ion-input formControlName="modelo" labelPlacement="floating" label="Modelo" type="text"></ion-input>
-        <p>
-        @if(hasError('modelo', 'required')) {
+        <p *ngIf="hasError('modelo', 'required')" class="error-message">
           O campo é obrigatório
-        }
-        </p>
-      </ion-item>
-      <ion-item>
-        <ion-input formControlName="ano" labelPlacement="floating" label="Ano" type="text"></ion-input>
-        <p>
-        @if(hasError('ano', 'required')) {
-          O campo é obrigatório
-        }
         </p>
       </ion-item>
       <ion-item>
         <ion-input formControlName="marca" labelPlacement="floating" label="Marca" type="text"></ion-input>
-        <p>
-        @if(hasError('marca', 'required')) {
+        <p *ngIf="hasError('marca', 'required')" class="error-message">
           O campo é obrigatório
-        }
         </p>
       </ion-item>
       <ion-item>
-        <ion-checkbox formControlName="possuiArCondicionado" labelPlacement="end">Possui Ar-Condicionado</ion-checkbox>
+        <ion-input formControlName="ano" labelPlacement="floating" label="Ano" type="number" min="1900" max="2024"></ion-input>
+        <p *ngIf="hasError('ano', 'required')" class="error-message">
+          O campo é obrigatório
+        </p>
+        <p *ngIf="hasError('ano', 'min') || hasError('ano', 'max')" class="error-message">
+          O ano deve estar entre 1900 e 2024
+        </p>
       </ion-item>
       <ion-item>
-        <ion-select formControlName="quantidadePortas" label="Quantidade de Portas" label-placement="floating">
-          <ion-select-option value="2">2</ion-select-option>
-          <ion-select-option value="4">4</ion-select-option>
+        <ion-input formControlName="cor" labelPlacement="floating" label="Cor" type="text"></ion-input>
+        <p *ngIf="hasError('cor', 'required')" class="error-message">
+          O campo é obrigatório
+        </p>
+      </ion-item>
+      <ion-item>
+        <ion-select formControlName="status" label="Status" label-placement="floating">
+          <ion-select-option value="ativo">Ativo</ion-select-option>
+          <ion-select-option value="inativo">Inativo</ion-select-option>
+          <ion-select-option value="manutencao">Em Manutenção</ion-select-option>
         </ion-select>
-        <p>
-        @if(hasError('quantidadePortas', 'required')) {
+        <p *ngIf="hasError('status', 'required')" class="error-message">
           O campo é obrigatório
-        }
-        </p>
-      </ion-item>
-      <ion-item>
-        <ion-input formControlName="capacidadePassageiros" labelPlacement="floating" label="Capacidade de Passageiros" type="number"></ion-input>
-        <p>
-        @if(hasError('capacidadePassageiros', 'required')) {
-          O campo é obrigatório
-        }
         </p>
       </ion-item>
     </ion-list>
@@ -78,36 +67,53 @@
     <ion-card-title>{{ editando ? 'Editar' : 'Novo' }} Veículo</ion-card-title>
   </ion-card-header>
   <ion-card-content>
-    <form (ngSubmit)="onSubmit()">
-      <ion-item>
-        <ion-label position="stacked">Placa</ion-label>
-        <ion-input [(ngModel)]="veiculo.placa" name="placa" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Modelo</ion-label>
-        <ion-input [(ngModel)]="veiculo.modelo" name="modelo" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Marca</ion-label>
-        <ion-input [(ngModel)]="veiculo.marca" name="marca" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Ano</ion-label>
-        <ion-input type="number" [(ngModel)]="veiculo.ano" name="ano" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Cor</ion-label>
-        <ion-input [(ngModel)]="veiculo.cor" name="cor" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Status</ion-label>
-        <ion-select [(ngModel)]="veiculo.status" name="status" required>
-          <ion-select-option value="ativo">Ativo</ion-select-option>
-          <ion-select-option value="inativo">Inativo</ion-select-option>
-          <ion-select-option value="manutencao">Em Manutenção</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-button expand="block" type="submit">
+    <form [formGroup]="veiculoForm" (ngSubmit)="onSubmit()">
+      <ion-list>
+        <ion-item>
+          <ion-input formControlName="placa" labelPlacement="floating" label="Placa" type="text"></ion-input>
+          <p *ngIf="hasError('placa', 'required')" class="error-message">
+            O campo é obrigatório
+          </p>
+        </ion-item>
+        <ion-item>
+          <ion-input formControlName="modelo" labelPlacement="floating" label="Modelo" type="text"></ion-input>
+          <p *ngIf="hasError('modelo', 'required')" class="error-message">
+            O campo é obrigatório
+          </p>
+        </ion-item>
+        <ion-item>
+          <ion-input formControlName="marca" labelPlacement="floating" label="Marca" type="text"></ion-input>
+          <p *ngIf="hasError('marca', 'required')" class="error-message">
+            O campo é obrigatório
+          </p>
+        </ion-item>
+        <ion-item>
+          <ion-input formControlName="ano" labelPlacement="floating" label="Ano" type="number" min="1900" max="2024"></ion-input>
+          <p *ngIf="hasError('ano', 'required')" class="error-message">
+            O campo é obrigatório
+          </p>
+          <p *ngIf="hasError('ano', 'min') || hasError('ano', 'max')" class="error-message">
+            O ano deve estar entre 1900 e 2024
+          </p>
+        </ion-item>
+        <ion-item>
+          <ion-input formControlName="cor" labelPlacement="floating" label="Cor" type="text"></ion-input>
+          <p *ngIf="hasError('cor', 'required')" class="error-message">
+            O campo é obrigatório
+          </p>
+        </ion-item>
+        <ion-item>
+          <ion-select formControlName="status" label="Status" label-placement="floating">
+            <ion-select-option value="ativo">Ativo</ion-select-option>
+            <ion-select-option value="inativo">Inativo</ion-select-option>
+            <ion-select-option value="manutencao">Em Manutenção</ion-select-option>
+          </ion-select>
+          <p *ngIf="hasError('status', 'required')" class="error-message">
+            O campo é obrigatório
+          </p>
+        </ion-item>
+      </ion-list>
+      <ion-button expand="block" type="submit" [disabled]="veiculoForm.invalid">
         {{ editando ? 'Atualizar' : 'Salvar' }}
       </ion-button>
       <ion-button expand="block" color="medium" type="button" (click)="onCancel()">

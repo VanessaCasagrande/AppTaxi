@@ -1,36 +1,34 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Corrida } from '../../../models/corrida.type';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CorridasService {
-  private readonly API_URL = 'http://localhost:3000/corridas';
+  private apiUrl = `${environment.apiUrl}/corridas`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getById(corridaId: string) {
-    return this.http.get<Corrida>(`${this.API_URL}/${corridaId}`);
+  getAll(): Observable<Corrida[]> {
+    return this.http.get<Corrida[]>(this.apiUrl);
   }
 
-  getList() {
-    return this.http.get<Corrida[]>(this.API_URL);
+  getById(id: number): Observable<Corrida> {
+    return this.http.get<Corrida>(`${this.apiUrl}/${id}`);
   }
 
-  private add(corrida: Corrida) {
-    return this.http.post<Corrida>(this.API_URL, corrida);
+  create(corrida: Corrida): Observable<Corrida> {
+    return this.http.post<Corrida>(this.apiUrl, corrida);
   }
 
-  private update(corrida: Corrida) {
-    return this.http.put<Corrida>(`${this.API_URL}/${corrida.id}`, corrida);
+  update(id: number, corrida: Corrida): Observable<Corrida> {
+    return this.http.put<Corrida>(`${this.apiUrl}/${id}`, corrida);
   }
 
-  save(corrida: Corrida) {
-    return corrida.id ? this.update(corrida) : this.add(corrida);
-  }
-
-  remove(corrida: Corrida) {
-    return this.http.delete<Corrida>(`${this.API_URL}/${corrida.id}`);
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 } 

@@ -1,7 +1,10 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { Chart } from 'chart.js';
+import { Chart, LineController, LineElement, PointElement, LinearScale, Title, CategoryScale, Legend } from 'chart.js';
+
+// REGISTRE OS COMPONENTES ANTES DE USAR O CHART
+Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale, Legend);
 
 @Component({
   selector: 'app-dashboard',
@@ -46,7 +49,7 @@ export class DashboardPage implements AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       this.inicializarGrafico();
-    }, 100);
+    }, 100); // aumente o tempo aqui
   }
 
   private inicializarGrafico() {

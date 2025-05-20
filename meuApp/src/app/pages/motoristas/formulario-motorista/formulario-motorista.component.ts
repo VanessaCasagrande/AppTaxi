@@ -5,11 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { 
   cpfMask, 
   telefoneMask, 
-  maskitoElement,
-  parseCpfMask,
-  parseTelefoneMask,
-  formatCpfMask,
-  formatTelefoneMask
+  maskitoElement
 } from '../../../shared/masks';
 
 @Component({
@@ -33,9 +29,9 @@ export class FormularioMotoristaComponent {
   @Output() cancelar = new EventEmitter<void>();
 
   // Configurações das máscaras
-  readonly cpfMask = cpfMask;
-  readonly telefoneMask = telefoneMask;
-  readonly maskitoElement = maskitoElement;
+  cpfMask = cpfMask;
+  telefoneMask = telefoneMask;
+  maskitoElement = maskitoElement;
 
   modificarCpf(event: any) {
     const cpf = event.target.value;
@@ -94,4 +90,4 @@ export class FormularioMotoristaComponent {
   onCancel() {
     this.cancelar.emit();
   }
-} 
+}

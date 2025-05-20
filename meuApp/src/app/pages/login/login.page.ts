@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services-login/auth.service';
-import { ToastController, IonicModule } from '@ionic/angular';
+import { IonicModule, MenuController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services-login/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -15,34 +15,32 @@ import { FormsModule } from '@angular/forms';
 export class LoginPage {
   email: string = '';
   senha: string = '';
+  error: string = '';
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private toastController: ToastController
+    private menuCtrl: MenuController
   ) {}
 
-  async fazerLogin() {
-    try {
-      const sucesso = await this.authService.login(this.email, this.senha);
-      
-      if (sucesso) {
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.mostrarMensagem('Email ou senha inválidos');
-      }
-    } catch (erro) {
-      this.mostrarMensagem('Erro ao fazer login');
-    }
+  ionViewWillEnter() {
+    this.menuCtrl.enable(false, 'main-menu');
   }
 
-  private async mostrarMensagem(mensagem: string) {
-    const toast = await this.toastController.create({
-      message: mensagem,
-      duration: 3000,
-      position: 'bottom',
-      color: 'danger'
+  ionViewWillLeave() {
+    this.menuCtrl.enable(true, 'main-menu');
+  }
+
+  login() {
+    this.error = '';
+    this.authService.login(this.email, this.senha).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        this.error = 'Credenciais inválidas';
+        console.error('Erro no login:', error);
+      }
     });
-    toast.present();
   }
 }

@@ -2,9 +2,9 @@
   "motoristas": [
     {
       "id": "1",
-      "nome": "João Silva",
-      "cpf": "12345678900",
-      "telefone": "11999999999",
+      "nome": "João Teixeira",
+      "cpf": "342.424.242-42",
+      "telefone": "(31) 44324-2435",
       "email": "joao@email.com",
       "status": "ativo"
     },
@@ -23,6 +23,64 @@
       "telefone": "48999464542",
       "email": "marcosdejesuspatriotaicara@gmail.com",
       "status": "ativo"
+    }
+  ],
+  "veiculos": [
+    {
+      "id": "1",
+      "modelo": "Fiat Uno",
+      "placa": "ABC-1234",
+      "cor": "Branco"
+    }
+  ],
+  "clientes": [
+    {
+      "id": "1",
+      "nome": "Carlos Oliveira",
+      "cpf": "12345678901",
+      "telefone": "11999998888",
+      "email": " CARLOS@HOTMAIL.COM"
+    }
+  ],
+  "corridas": [
+    {
+      "id": "1",
+      "motoristaId": "1",
+      "veiculoId": "1",
+      "clienteId": "1",
+      "dataInicio": "2023-10-01T10:00:00Z",
+      "dataFim": "2023-10-01T12:00:00Z",
+      "status": "concluída"
+    },
+    {
+      "id": "2",
+      "motoristaId": "2",
+      "veiculoId": "2",
+      "clienteId": null,
+      "dataInicio": null,
+      "dataFim": null,
+      "status": "pendente"
+    },
+    {
+      "id": "7c7e",
+      "clienteId": "1",
+      "motoristaId": "2",
+      "veiculoId": "1",
+      "origem": "-28.669919963744487,-49.37865257263184",
+      "destino": "-28.6792779092457,-49.37208652496338",
+      "valor": 9.5522,
+      "status": "pendente",
+      "dataHora": "2025-05-20T03:25:02.661Z",
+      "distanciaKm": 2.2761,
+      "duracaoMinutos": 0
+    }
+  ],
+  "usuarios": [
+    {
+      "id": "1",
+      "nome": "Admin",
+      "email": "admin",
+      "senha": "admin123"
     }
   ]
 }

@@ -1,99 +1,42 @@
-<ion-header>
-  <ion-toolbar color="primary">
+<ion-header [translucent]="true">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Motoristas</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="mostrarFormulario()">
-        <ion-icon slot="icon-only" name="add-circle"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <!-- Lista de Motoristas -->
-  <ion-list *ngIf="!mostrarForm">
-    <ion-item *ngFor="let motorista of motoristas">
-      <ion-label>
-        <h2>{{ motorista.nome }}</h2>
-        <p>CPF: {{ motorista.cpf }}</p>
-        <p>Telefone: {{ motorista.telefone }}</p>
-        <p>Email: {{ motorista.email }}</p>
-        <p>
-          <ion-icon 
-            [name]="motorista.status === 'ativo' ? 'checkmark-circle' : 'close-circle'"
-            [color]="motorista.status === 'ativo' ? 'success' : 'danger'"
-            class="status-icon">
-          </ion-icon>
-          Status: {{ motorista.status }}
-        </p>
-      </ion-label>
-      <ion-buttons slot="end">
-        <ion-button (click)="editar(motorista)">
-          <ion-icon name="create-outline"></ion-icon>
-        </ion-button>
-        <ion-button color="danger" (click)="excluir(motorista.id!)">
-          <ion-icon name="trash-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
-  </ion-list>
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Motoristas</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-  <!-- Formulário de Cadastro/Edição -->
-  <ion-card *ngIf="mostrarForm">
-    <ion-card-header>
-      <ion-card-title>{{ editando ? 'Editar' : 'Novo' }} Motorista</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-label position="stacked">Nome</ion-label>
-        <ion-input [(ngModel)]="motorista.nome"></ion-input>
+  <div class="ion-padding">
+    <ion-button expand="block" (click)="abrirNovoMotorista()">
+      Novo Motorista
+    </ion-button>
+
+    <ion-list>
+      <ion-item *ngFor="let motorista of motoristas">
+        <ion-label>
+          <h2>{{ motorista.nome }}</h2>
+          <p>{{ motorista.cpf }}</p>
+          <p>{{ motorista.email }}</p>
+        </ion-label>
+        <ion-badge slot="end" [color]="motorista.status === 'ativo' ? 'success' : 'danger'">
+          {{ motorista.status }}
+        </ion-badge>
+        <ion-button fill="clear" color="primary" slot="end" (click)="editar(motorista)">
+          <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" color="danger" slot="end" (click)="motorista.id !== undefined && excluir(+motorista.id)">
+          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-button>
       </ion-item>
-      <ion-item>
-        <ion-label position="stacked">CPF</ion-label>
-        <ion-input
-          type="text"
-          [(ngModel)]="motorista.cpf"
-          placeholder="000.000.000-00"
-          [maskito]="cpfMask"
-          [maskitoElement]="maskitoElement"
-          (ionChange)="onCpfChange($event)"
-          maxlength="11"
-          required
-        ></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Telefone</ion-label>
-        <ion-input 
-          type="text"
-          [(ngModel)]="motorista.telefone"
-          placeholder="(00) 00000-0000"
-          [maskito]="telefoneMask"
-          [maskitoElement]="maskitoElement"
-          (ionChange)="onTelefoneChange($event)"
-          maxlength="11"
-          required>
-        </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Email</ion-label>
-        <ion-input [(ngModel)]="motorista.email"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Status</ion-label>
-        <ion-select [(ngModel)]="motorista.status">
-          <ion-select-option value="ativo">Ativo</ion-select-option>
-          <ion-select-option value="inativo">Inativo</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-button expand="block" (click)="salvar()">
-        {{ editando ? 'Atualizar' : 'Salvar' }}
-      </ion-button>
-      <ion-button expand="block" color="medium" (click)="cancelar()">
-        Cancelar
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
+    </ion-list>
+
+  </div>
 </ion-content>

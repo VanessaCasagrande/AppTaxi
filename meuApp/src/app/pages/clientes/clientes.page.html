@@ -4,11 +4,6 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Clientes</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="mostrarFormulario()">
-        <ion-icon name="add"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -19,31 +14,36 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- Lista de Clientes -->
-  <ion-list *ngIf="!mostrarForm">
-    <ion-item *ngFor="let cliente of clientes">
-      <ion-label>
-        <h2>{{ cliente.nome }}</h2>
-        <p>CPF: {{ cliente.cpf }} | Telefone: {{ cliente.telefone }}</p>
-        <p>Email: {{ cliente.email }} | Status: {{ cliente.status }}</p>
-      </ion-label>
-      <ion-buttons slot="end">
-        <ion-button (click)="editar(cliente)">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button (click)="excluir(cliente.id!)" color="danger">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
-  </ion-list>
+  <div class="ion-padding">
+    <ion-button expand="block" (click)="mostrarForm = true">
+      Novo Cliente
+    </ion-button>
 
-  <!-- Formulário de Cliente -->
-  <app-formulario-cliente
-    *ngIf="mostrarForm"
-    [cliente]="cliente"
-    [editando]="editando"
-    (salvar)="salvar($event)"
-    (cancelar)="cancelar()">
-  </app-formulario-cliente>
+    <ion-list>
+      <ion-item *ngFor="let cliente of clientes">
+        <ion-label>
+          <h2>{{ cliente.nome }}</h2>
+          <p>{{ cliente.cpf }}</p>
+          <p>{{ cliente.email }}</p>
+        </ion-label>
+        <ion-badge slot="end" [color]="cliente.status === 'ativo' ? 'success' : 'danger'">
+          {{ cliente.status }}
+        </ion-badge>
+        <ion-button fill="clear" color="primary" slot="end" (click)="editar(cliente)">
+          <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" color="danger" slot="end" (click)="excluir(cliente.id!)">
+          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <app-formulario-cliente
+      *ngIf="mostrarForm"
+      [cliente]="cliente"
+      [editando]="editando"
+      (salvar)="salvar($event)"
+      (cancelar)="mostrarForm = false"
+    ></app-formulario-cliente>
+  </div>
 </ion-content>

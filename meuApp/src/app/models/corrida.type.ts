@@ -19,9 +19,9 @@ export type Corrida = {
   veiculoId: number;
   origem: string;
   destino: string;
-  distanciaKm: number;
-  duracaoMinutos: number;
   valor: number;
   status: 'pendente' | 'em_andamento' | 'concluida' | 'cancelada';
   dataHora: Date;
+  distanciaKm: number;
+  duracaoMinutos: number;
 }; 

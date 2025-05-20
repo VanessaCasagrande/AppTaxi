@@ -4,11 +4,6 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Veículos</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="mostrarFormulario()">
-        <ion-icon name="add"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -19,31 +14,33 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- Lista de Veículos -->
-  <ion-list>
-    <ion-item *ngFor="let veiculo of veiculos">
-      <ion-label>
-        <h2>{{ veiculo.modelo }} - {{ veiculo.marca }}</h2>
-        <p>Placa: {{ veiculo.placa }} | Ano: {{ veiculo.ano }} | Cor: {{ veiculo.cor }}</p>
-        <p>Status: {{ veiculo.status }}</p>
-      </ion-label>
-      <ion-buttons slot="end">
-        <ion-button (click)="editar(veiculo)">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button (click)="excluir(veiculo.id!)" color="danger">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
-  </ion-list>
+  <div class="ion-padding">
+    <ion-button expand="block" (click)="mostrarForm = true">
+      Novo Veículo
+    </ion-button>
 
-  <!-- Formulário de Veículo -->
-  <app-formulario-veiculo
-    *ngIf="mostrarForm"
-    [veiculo]="veiculo"
-    [editando]="editando"
-    (salvar)="salvar($event)"
-    (cancelar)="cancelar()">
-  </app-formulario-veiculo>
+    <ion-list>
+      <ion-item *ngFor="let veiculo of veiculos">
+        <ion-label>
+          <h2>{{ veiculo.modelo }}</h2>
+          <p>{{ veiculo.placa }}</p>
+          <p>{{ veiculo.cor }}</p>
+        </ion-label>
+        <ion-button fill="clear" color="primary" slot="end" (click)="editar(veiculo)">
+          <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" color="danger" slot="end" (click)="excluir(veiculo.id!)">
+          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <app-formulario-veiculo
+      *ngIf="mostrarForm"
+      [veiculo]="veiculo"
+      [editando]="editando"
+      (salvar)="salvar($event)"
+      (cancelar)="mostrarForm = false"
+    ></app-formulario-veiculo>
+  </div>
 </ion-content>

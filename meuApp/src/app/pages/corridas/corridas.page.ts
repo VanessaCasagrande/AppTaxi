@@ -1,20 +1,20 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
-import { IonicModule, ViewWillEnter } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CorridasService } from './service/corridas.service';
-import { FormularioCorridaComponent } from './formulario-corrida/formulario-corrida.component';
 import { Corrida } from '../../models/corrida.type';
+import { RouterModule } from '@angular/router';
+import { FormularioCorridaComponent } from './formulario-corrida/formulario-corrida.component';
 
 @Component({
   selector: 'app-corridas',
   templateUrl: './corridas.page.html',
   styleUrls: ['./corridas.page.scss'],
   standalone: true,
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonicModule, CommonModule, FormsModule, FormularioCorridaComponent]
+  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, RouterModule, FormularioCorridaComponent]
 })
-export class CorridasPage implements OnInit, ViewWillEnter {
+export class CorridasPage implements OnInit {
   corridas: Corrida[] = [];
   corrida: Corrida = {
     clienteId: 0,
@@ -24,34 +24,32 @@ export class CorridasPage implements OnInit, ViewWillEnter {
     destino: '',
     valor: 0,
     status: 'pendente',
-    dataHora: new Date()
+    dataHora: new Date(),
+    distanciaKm: 0,
+    duracaoMinutos: 0
   };
   editando = false;
   mostrarForm = false;
 
-  constructor(private corridasService: CorridasService) {
-    this.carregarCorridas();
-  }
+  constructor(private corridasService: CorridasService) {}
 
-  ngOnInit() {}
-
-  ionViewWillEnter() {
+  ngOnInit() {
     this.carregarCorridas();
+    this.mostrarFormulario();
   }
 
   carregarCorridas() {
-    this.corridasService.getList().subscribe(
-      (data) => {
+    this.corridasService.getAll().subscribe({
+      next: (data: Corrida[]) => {
         this.corridas = data;
       },
-      (error) => {
+      error: (error: Error) => {
         console.error('Erro ao carregar corridas', error);
       }
-    );
+    });
   }
 
   mostrarFormulario() {
-    this.mostrarForm = true;
     this.editando = false;
     this.corrida = {
       clienteId: 0,
@@ -61,8 +59,11 @@ export class CorridasPage implements OnInit, ViewWillEnter {
       destino: '',
       valor: 0,
       status: 'pendente',
-      dataHora: new Date()
+      dataHora: new Date(),
+      distanciaKm: 0,
+      duracaoMinutos: 0
     };
+    this.mostrarForm = false;
   }
 
   editar(corrida: Corrida) {
@@ -72,36 +73,47 @@ export class CorridasPage implements OnInit, ViewWillEnter {
   }
 
   salvar(corrida: Corrida) {
-    this.corridasService.save(corrida).subscribe(
-      (data) => {
-        if (this.editando) {
+    if (this.editando && corrida.id) {
+      this.corridasService.update(corrida.id, corrida).subscribe({
+        next: (data: Corrida) => {
           const index = this.corridas.findIndex(c => c.id === data.id);
           if (index !== -1) {
             this.corridas[index] = data;
           }
-        } else {
-          this.corridas.push(data);
+          this.editando = false;
+          this.mostrarForm = false;
+        },
+        error: (error: Error) => {
+          console.error('Erro ao atualizar corrida', error);
         }
-        this.mostrarForm = false;
-      },
-      (error) => {
-        console.error('Erro ao salvar corrida', error);
-      }
-    );
+      });
+    } else {
+      this.corridasService.create(corrida).subscribe({
+        next: (data: Corrida) => {
+          this.corridas.push(data);
+          this.editando = false;
+          this.mostrarForm = false;
+        },
+        error: (error: Error) => {
+          console.error('Erro ao criar corrida', error);
+        }
+      });
+    }
   }
 
   excluir(id: number) {
-    this.corridasService.remove({ id } as Corrida).subscribe(
-      () => {
+    this.corridasService.delete(id).subscribe({
+      next: () => {
         this.corridas = this.corridas.filter(c => c.id !== id);
       },
-      (error) => {
+      error: (error: Error) => {
         console.error('Erro ao excluir corrida', error);
       }
-    );
+    });
   }
 
   cancelar() {
+    this.editando = false;
     this.mostrarForm = false;
   }
 }

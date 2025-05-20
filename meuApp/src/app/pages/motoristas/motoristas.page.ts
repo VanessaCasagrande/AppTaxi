@@ -1,8 +1,9 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { IonicModule, ViewWillEnter } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MotoristasService } from './service/motoristas.service';
+import { Router } from '@angular/router';
 import { 
   cpfMask, 
   telefoneMask, 
@@ -12,7 +13,6 @@ import {
   formatCpfMask,
   formatTelefoneMask
 } from '../../shared/masks';
-import { FormularioMotoristaComponent } from './formulario-motorista/formulario-motorista.component';
 import { Motorista } from '../../models/motorista.type';
 
 @Component({
@@ -21,13 +21,15 @@ import { Motorista } from '../../models/motorista.type';
   styleUrls: ['./motoristas.page.scss'],
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonicModule, CommonModule, FormsModule, FormularioMotoristaComponent]
+  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule /*, FormularioMotoristaComponent */]
+  
 })
 export class MotoristasPage implements OnInit, ViewWillEnter {
   motoristas: Motorista[] = [];
   motorista: Motorista = {
     nome: '',
     cpf: '',
+    cnh: '',
     telefone: '',
     email: '',
     status: 'ativo'
@@ -39,26 +41,32 @@ export class MotoristasPage implements OnInit, ViewWillEnter {
   readonly cpfMask = cpfMask;
   readonly telefoneMask = telefoneMask;
   readonly maskitoElement = maskitoElement;
+  constructor(
+    private motoristasService: MotoristasService,
+    private router: Router
+  ) {}
 
-  constructor(private motoristasService: MotoristasService) {
+  ngOnInit() {
     this.carregarMotoristas();
   }
-
-  ngOnInit() {}
 
   ionViewWillEnter() {
     this.carregarMotoristas();
   }
 
+  abrirNovoMotorista() {
+    this.router.navigate(['motoristas/novo']);
+  }
+
   carregarMotoristas() {
-    this.motoristasService.getList().subscribe(
-      (data) => {
+    this.motoristasService.getAll().subscribe({
+      next: (data) => {
         this.motoristas = data;
       },
-      (error) => {
+      error: (error) => {
         console.error('Erro ao carregar motoristas', error);
       }
-    );
+    });
   }
 
   formatarCPF(cpf: string): string {
@@ -131,6 +139,7 @@ export class MotoristasPage implements OnInit, ViewWillEnter {
     this.motorista = {
       nome: '',
       cpf: '',
+      cnh: '',
       telefone: '',
       email: '',
       status: 'ativo'
@@ -138,39 +147,45 @@ export class MotoristasPage implements OnInit, ViewWillEnter {
   }
 
   editar(motorista: Motorista) {
-    this.motorista = { ...motorista };
-    this.editando = true;
-    this.mostrarForm = true;
+    this.router.navigate(['motoristas/editar', motorista.id]);
   }
 
   salvar(motorista: Motorista) {
-    this.motoristasService.save(motorista).subscribe(
-      (data) => {
-        if (this.editando) {
+    if (this.editando && motorista.id) {
+      this.motoristasService.update(Number(motorista.id), motorista).subscribe({
+        next: (data) => {
           const index = this.motoristas.findIndex(m => m.id === data.id);
           if (index !== -1) {
             this.motoristas[index] = data;
           }
-        } else {
-          this.motoristas.push(data);
+          this.mostrarForm = false;
+        },
+        error: (error) => {
+          console.error('Erro ao atualizar motorista', error);
         }
-        this.mostrarForm = false;
-      },
-      (error) => {
-        console.error('Erro ao salvar motorista', error);
-      }
-    );
+      });
+    } else {
+      this.motoristasService.create(motorista).subscribe({
+        next: (data) => {
+          this.motoristas.push(data);
+          this.mostrarForm = false;
+        },
+        error: (error) => {
+          console.error('Erro ao criar motorista', error);
+        }
+      });
+    }
   }
 
   excluir(id: number) {
-    this.motoristasService.remove({ id } as Motorista).subscribe(
-      () => {
-        this.motoristas = this.motoristas.filter(m => m.id !== id);
+    this.motoristasService.delete(id).subscribe({
+      next: () => {
+        this.motoristas = this.motoristas.filter(m => Number(m.id) !== id);
       },
-      (error) => {
+      error: (error) => {
         console.error('Erro ao excluir motorista', error);
       }
-    );
+    });
   }
 
   cancelar() {

@@ -4,11 +4,6 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Corridas</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="mostrarFormulario()">
-        <ion-icon name="add"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -19,30 +14,33 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-list>
-    <ion-item *ngFor="let corrida of corridas">
-      <ion-label>
-        <h2>Corrida #{{ corrida.id }}</h2>
-        <p>Origem: {{ corrida.origem }} | Destino: {{ corrida.destino }}</p>
-        <p>Valor: R$ {{ corrida.valor.toFixed(2) }} | Status: {{ corrida.status }}</p>
-        <p>Data/Hora: {{ corrida.dataHora | date:'dd/MM/yyyy HH:mm' }}</p>
-      </ion-label>
-      <ion-buttons slot="end">
-        <ion-button (click)="editar(corrida)">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button (click)="excluir(corrida.id!)" color="danger">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
-  </ion-list>
+  <div class="ion-padding">
+    <ion-button expand="block" (click)="mostrarForm = true">
+      Nova Corrida
+    </ion-button>
 
-  <app-formulario-corrida
-    *ngIf="mostrarForm"
-    [corrida]="corrida"
-    [editando]="editando"
-    (salvar)="salvar($event)"
-    (cancelar)="cancelar()"
-  ></app-formulario-corrida>
+    <ion-list>
+      <ion-item *ngFor="let corrida of corridas">
+        <ion-label>
+          <h2>{{ corrida.origem }} → {{ corrida.destino }}</h2>
+          <p>Motorista: {{ corrida.motoristaId }}</p>
+          <p>Status: {{ corrida.status }}</p>
+        </ion-label>
+        <ion-button fill="clear" color="primary" slot="end" (click)="editar(corrida)">
+          <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" color="danger" slot="end" (click)="excluir(corrida.id!)">
+          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <app-formulario-corrida
+      *ngIf="mostrarForm"
+      [corrida]="corrida"
+      [editando]="editando"
+      (salvar)="salvar($event)"
+      (cancelar)="mostrarForm = false"
+    ></app-formulario-corrida>
+  </div>
 </ion-content>
