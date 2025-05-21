@@ -16,7 +16,10 @@ export class MotoristasService {
     return this.http.get<Motorista[]>(this.apiUrl);
   }
 
-  getById(id: number): Observable<Motorista> {
+  getById(id: string): Observable<Motorista> {
+    if (!id) {
+      throw new Error('ID inválido para busca de motorista');
+    }
     return this.http.get<Motorista>(`${this.apiUrl}/${id}`);
   }
 
@@ -28,7 +31,7 @@ export class MotoristasService {
     return this.http.put<Motorista>(`${this.apiUrl}/${id}`, motorista);
   }
 
-  delete(id: number): Observable<void> {
+  delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
-} 
+}

@@ -45,7 +45,7 @@ export class FormularioMotoristaComponent {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.editando = true;
-      this.motoristasService.getById(+id).subscribe(motorista => {
+      this.motoristasService.getById(id).subscribe(motorista => {
         this.motorista = motorista;
       });
     }

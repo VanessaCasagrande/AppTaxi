@@ -3,7 +3,7 @@ import { IonicModule, ViewWillEnter } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MotoristasService } from './service/motoristas.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { 
   cpfMask, 
   telefoneMask, 
@@ -43,11 +43,25 @@ export class MotoristasPage implements OnInit, ViewWillEnter {
   readonly maskitoElement = maskitoElement;
   constructor(
     private motoristasService: MotoristasService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
     this.carregarMotoristas();
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.motoristasService.getById(id).subscribe({
+        next: (data) => {
+          this.motorista = data;
+          this.editando = true;
+          this.mostrarForm = true;
+        },
+        error: (error) => {
+          console.error('Erro ao carregar motorista', error);
+        }
+      });
+    }
   }
 
   ionViewWillEnter() {
@@ -177,10 +191,11 @@ export class MotoristasPage implements OnInit, ViewWillEnter {
     }
   }
 
-  excluir(id: number) {
-    this.motoristasService.delete(id).subscribe({
+  excluir(id: any) {
+    const idStr = String(id);
+    this.motoristasService.delete(idStr).subscribe({
       next: () => {
-        this.motoristas = this.motoristas.filter(m => Number(m.id) !== id);
+        this.motoristas = this.motoristas.filter(m => String(m.id) !== idStr);
       },
       error: (error) => {
         console.error('Erro ao excluir motorista', error);
